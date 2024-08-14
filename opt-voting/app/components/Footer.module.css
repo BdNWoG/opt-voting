@@ -1,5 +1,5 @@
 .footer {
-    width: calc(100% + 40px); /* Increase width to counteract negative margin */
+    width: calc(100% + 80px); /* Increase width to counteract negative margin */
     padding: 20px 0; /* Vertical padding only */
     background-color: rgba(230, 57, 70, 0.6); /* More orangey color with lower transparency */
     color: #ffffff; /* White text color */
