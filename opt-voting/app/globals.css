@@ -28,7 +28,7 @@ body {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
   padding: 15px;
   border-radius: 5px;
-  flex: 1.5; /* Reduce width to 1.5 (previously 2) */
+  flex: 1.5; /* Reduced width */
   margin-right: 20px; /* Space between box and info */
 }
 
@@ -39,7 +39,7 @@ body {
 }
 
 .input-field, .slider {
-  width: 100%;
+  width: 95%; /* Reduced width to ensure it stays within the box */
   padding: 10px;
   margin-top: 5px;
 }
@@ -70,4 +70,26 @@ body {
 .info-box p {
   font-size: 14px;
   color: #333;
+}
+
+/* Simulate Button */
+.simulate-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.simulate-button {
+  background-color: #e63946; /* Red color */
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.simulate-button:hover {
+  background-color: #cc2b3a; /* Slightly darker red on hover */
 }

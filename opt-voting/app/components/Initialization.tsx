@@ -150,6 +150,11 @@ const Initialization: React.FC = () => {
             <p>Brief explanation of what Variable 8 is.</p>
           </div>
         </div>
+
+        {/* Simulate Button */}
+        <div className="simulate-button-container">
+          <button className="simulate-button">Simulate!</button>
+        </div>
       </div>
     </section>
   );
