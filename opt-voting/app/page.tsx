@@ -3,7 +3,7 @@ import Initialization from './components/Initialization';
 export default function Home() {
   return (
     <div>
-      <section id="description" style={{ padding: '80px 20px 0px' }}>
+      <section id="description" style={{ padding: '50px 20px 0px' }}>
         <h2 className="section-heading">Description</h2>
         <p className="section-paragraph">
           This is a brief paragraph of text that describes the purpose of the Optimism Voting Strategy. 

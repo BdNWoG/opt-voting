@@ -17,10 +17,20 @@ body {
 }
 
 /* Container for Each Pair of Input/Slider and Info */
+.initialization-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the entire content */
+  width: 100%;
+}
+
 .box-pair {
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   margin-bottom: 20px;
+  width: 80%; /* Adjust width to ensure it's centered */
+  padding-top: 10px;
 }
 
 /* Input and Slider Boxes */
@@ -28,7 +38,7 @@ body {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
   padding: 15px;
   border-radius: 5px;
-  flex: 1.5; /* Reduced width */
+  flex: 1.5; /* Use equal flex values to balance width */
   margin-right: 20px; /* Space between box and info */
 }
 
@@ -57,7 +67,7 @@ body {
 
 /* Right Side: Information Boxes */
 .info-box {
-  flex: 1; /* Takes 1/3 of the width */
+  flex: 1; /* Use equal flex values to balance width */
 }
 
 .info-box h3 {
@@ -77,13 +87,14 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 30px;
+  width: 80%; /* Align the button with the box-pair width */
 }
 
 .simulate-button {
   background-color: #e63946; /* Red color */
   color: white;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 15px 30px; /* Increase button size */
+  font-size: 18px; /* Larger font size */
   font-weight: bold;
   border: none;
   border-radius: 5px;
