@@ -12,7 +12,7 @@ const Initialization: React.FC = () => {
   };
 
   return (
-    <section id="initialization" className="initialization-section">
+    <section id="initialization" className="initialization-section" style={{ padding: '20px 20px' }}>
       <h2 className="section-heading">Initialization</h2>
       <p className="section-paragraph">
         This section provides the initial setup for the Optimism Voting Strategy. Below, you can interact with various settings to customize the simulation.

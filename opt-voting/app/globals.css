@@ -28,7 +28,7 @@ body {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
   padding: 15px;
   border-radius: 5px;
-  flex: 2; /* Takes 2/3 of the width */
+  flex: 1.5; /* Reduce width to 1.5 (previously 2) */
   margin-right: 20px; /* Space between box and info */
 }
 
