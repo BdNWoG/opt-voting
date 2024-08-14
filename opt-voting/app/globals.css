@@ -150,7 +150,7 @@ p.section-paragraph {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px; /* Height for the boxes */
+  height: 400px; /* Height for the boxes */
   width: 100%; /* Ensure full width */
 }
 
