@@ -43,7 +43,7 @@ body {
   color: rgb(var(--foreground-rgb));
   font-family: 'Inter', sans-serif; /* Ensure it matches the default text */
   line-height: 1.6;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 /* Section Styling */
