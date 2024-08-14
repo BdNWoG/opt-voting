@@ -3,17 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /* Foreground color set back to black */
+  /* Color variables */
   --foreground-rgb: 0, 0, 0; /* Black */
-  
-  /* Background gradient from light red to white */
-  --background-start-rgb: 255, 245, 245; /* A very light red-pink */
-  --background-end-rgb: 255, 255, 255; /* Pure white */
+  --background-start-rgb: 255, 245, 245; /* Light red-pink */
+  --background-end-rgb: 255, 255, 255; /* White */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode adjustments, if necessary */
     --foreground-rgb: 255, 255, 255; /* White for dark mode text */
     --background-start-rgb: 50, 10, 10; /* Darker red */
     --background-end-rgb: 230, 57, 70; /* #e63946 */
@@ -28,6 +25,36 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  padding-left: 40px; /* Added left padding to the entire body */
+}
+
+/* Heading Styles */
+.section-heading {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000; /* Black color for headings */
+  font-family: 'Inter', sans-serif; /* Ensure it matches the title's font */
+  margin-bottom: 20px;
+}
+
+/* Paragraph Styles */
+.section-paragraph {
+  font-size: 16px;
+  color: rgb(var(--foreground-rgb));
+  font-family: 'Inter', sans-serif; /* Ensure it matches the default text */
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Section Styling */
+section {
+  padding-top: 40px; /* Space between header and first section */
+  margin-bottom: 20px; /* Reduced spacing between sections */
+}
+
+/* Adjust the first section for extra top padding */
+#description {
+  padding-top: 80px; /* Extra top padding between header and "Description" */
 }
 
 @layer utilities {
