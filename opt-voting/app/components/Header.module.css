@@ -1,65 +1,63 @@
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #ffffff;
-    z-index: 1000;
-    transition: top 0.3s ease-in-out;
-    background-color: #e63946; /* Darker background to complement the red and white */
-  }
-  
-  .header.hidden {
-    top: -100px;
-  }
-  
-  .headerLeft h1 {
-    margin: 0;
-    font-size: 24px; /* Increase font size */
-    font-weight: bold; /* Make the title bold */
-    color: #ffffff; /* Change color back to white */
-  }  
-  
-  .headerRight {
-    display: flex;
-    align-items: center;
-  }
-  
-  .headerRight nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-  }
-  
-  .headerRight nav ul li {
-    margin-left: 20px;
-  }
-  
-  .headerRight nav ul li a {
-    color: #ffffff; /* White text color */
-    text-decoration: none;
-    font-weight: bold; /* Bold menu tabs */
-  }
-  
-  .headerIcons {
-    display: flex;
-    align-items: center;
-    margin-left: 20px; /* Space between the nav links and icons */
-  }
-  
-  .headerIcons a {
-    margin-left: 10px;
-  }
-  
-  .headerIcons img {
-    width: 24px; /* Slightly larger icons */
-    height: 24px;
-    /* Remove the invert filter to keep default colors */
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #e63946; /* Darker background to complement the red and white */
+  color: #ffffff;
+  z-index: 1000;
+  transition: top 0.3s ease-in-out;
+}
+
+.header.hidden {
+  top: -100px;
+}
+
+.headerLeft h1 {
+  margin: 0;
+  font-size: 24px; /* Increase font size */
+  font-weight: bold; /* Make the title bold */
+  color: #ffffff; /* Change color back to white */
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  margin-right: 40px; /* Add more margin to move the header content inward */
+}
+
+.headerRight nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.headerRight nav ul li {
+  margin-left: 20px; /* Reduce margin to save space */
+}
+
+.headerRight nav ul li a {
+  color: #ffffff; /* White text color */
+  text-decoration: none;
+  font-weight: bold; /* Bold menu tabs */
+}
+
+.headerIcons {
+  display: flex;
+  align-items: center;
+  margin-left: 20px; /* Reduce margin to save space */
+}
+
+.headerIcons a {
+  margin-left: 15px; /* Reduce space between icons */
+}
+
+.headerIcons img {
+  width: 24px; /* Slightly larger icons */
+  height: 24px;
+}
