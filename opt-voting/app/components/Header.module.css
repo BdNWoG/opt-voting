@@ -11,7 +11,7 @@
     color: #ffffff;
     z-index: 1000;
     transition: top 0.3s ease-in-out;
-    background-color: #222; /* Darker background to complement the red and white */
+    background-color: #e63946; /* Darker background to complement the red and white */
   }
   
   .header.hidden {
@@ -22,8 +22,8 @@
     margin: 0;
     font-size: 24px; /* Increase font size */
     font-weight: bold; /* Make the title bold */
-    color: #e63946; /* Red color from the logo */
-  }
+    color: #ffffff; /* Change color back to white */
+  }  
   
   .headerRight {
     display: flex;

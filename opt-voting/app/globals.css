@@ -3,16 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Foreground color set back to black */
+  --foreground-rgb: 0, 0, 0; /* Black */
+  
+  /* Background gradient from light red to white */
+  --background-start-rgb: 255, 245, 245; /* A very light red-pink */
+  --background-end-rgb: 255, 255, 255; /* Pure white */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    /* Dark mode adjustments, if necessary */
+    --foreground-rgb: 255, 255, 255; /* White for dark mode text */
+    --background-start-rgb: 50, 10, 10; /* Darker red */
+    --background-end-rgb: 230, 57, 70; /* #e63946 */
   }
 }
 
