@@ -26,7 +26,10 @@ export default function Home() {
 
       <section id="explanation" style={{ padding: '20px 20px' }}>
         <h2 className="section-heading">Explanation</h2>
-        <p>Content for Explanation section...</p>
+        <p className="section-paragraph">
+          This will be many paragraphs of text that explains the working behind the Optimism Voting Strategy. 
+          It provides a detailed explanation the research and its potential basis, including proofs, images or more.
+        </p>
       </section>
     </div>
   );
