@@ -33,14 +33,14 @@ p.section-paragraph {
   font-weight: 400; /* Regular weight */
 }
 
-/* Initialization Section Layout */
-.initialization-section {
+/* Initialization and Measurement Section Layout */
+.initialization-section, .measurement-section {
   padding-top: 40px;
   padding-bottom: 20px;
 }
 
 /* Container for Each Pair of Input/Slider and Info */
-.initialization-container {
+.initialization-container, .measurement-container {
   display: flex;
   flex-direction: column;
   align-items: center; /* Center the entire content */

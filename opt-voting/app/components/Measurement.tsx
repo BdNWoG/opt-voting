@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import styles from './Measurement.module.css'; // Import the associated CSS module
 
 const Measurement: React.FC = () => {
   // These values are fixed, so we just define them here
