@@ -9,7 +9,7 @@ body {
     )
     rgb(var(--background-start-rgb));
   padding-left: 40px; /* Left padding for the entire body */
-  padding-right: 40px; /* Left padding for the entire body */
+  padding-right: 40px; /* Right padding for the entire body */
   font-family: 'Inter', sans-serif; /* Ensure consistent font across the body */
 }
 
@@ -53,7 +53,7 @@ p.section-paragraph {
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20px;
-  width: 90%; /* Adjust width to ensure it's centered */
+  width: 100%; /* Adjust width to ensure it's centered */
   padding-top: 15px;
 }
 
@@ -62,7 +62,7 @@ p.section-paragraph {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
   padding: 15px;
   border-radius: 5px;
-  flex: 2.5; /* Use equal flex values to balance width */
+  flex: 3; /* Use equal flex values to balance width */
   margin-right: 20px; /* Space between box and info */
 }
 
@@ -92,6 +92,9 @@ p.section-paragraph {
 /* Right Side: Information Boxes */
 .info-box {
   flex: 1.5; /* Use equal flex values to balance width */
+  border: 2px solid #000; /* Black outline */
+  padding: 15px; /* Add padding to content inside the info box */
+  border-radius: 5px; /* Match the border radius of the input/slider boxes */
 }
 
 .info-box h3 {
