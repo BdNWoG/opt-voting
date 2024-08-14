@@ -30,7 +30,7 @@ body {
   justify-content: space-between;
   margin-bottom: 20px;
   width: 80%; /* Adjust width to ensure it's centered */
-  padding-top: 10px;
+  padding-top: 15px;
 }
 
 /* Input and Slider Boxes */
@@ -38,7 +38,7 @@ body {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
   padding: 15px;
   border-radius: 5px;
-  flex: 1.5; /* Use equal flex values to balance width */
+  flex: 2.5; /* Use equal flex values to balance width */
   margin-right: 20px; /* Space between box and info */
 }
 
@@ -67,7 +67,7 @@ body {
 
 /* Right Side: Information Boxes */
 .info-box {
-  flex: 1; /* Use equal flex values to balance width */
+  flex: 1.5; /* Use equal flex values to balance width */
 }
 
 .info-box h3 {

@@ -1,0 +1,81 @@
+.footer {
+    width: calc(100% + 40px); /* Increase width to counteract negative margin */
+    padding: 20px 0; /* Vertical padding only */
+    background-color: rgba(230, 57, 70, 0.6); /* More orangey color with lower transparency */
+    color: #ffffff; /* White text color */
+    text-align: center;
+    position: relative;
+    margin-top: 40px; /* Add margin to separate the footer from content above */
+    margin-left: -40px; /* Negative margin to offset body padding */
+    left: 0; /* Ensure it starts from the left */
+  }
+  
+  .footerContainer {
+    display: flex;
+    justify-content: space-between; /* Distribute the sections evenly */
+    align-items: center;
+    max-width: 1200px; /* Set a max width for the content */
+    margin: 0 auto; /* Center the footer content */
+    padding: 0; /* Remove side padding */
+  }
+  
+  .footerSection {
+    flex: 1; /* Each section takes up equal space */
+    text-align: center;
+  }
+  
+  .footerSection h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .footerSection ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footerSection ul li {
+    margin-bottom: 5px;
+  }
+  
+  .footerSection ul li a {
+    color: #ffffff; /* Use white color for links */
+    text-decoration: none;
+  }
+  
+  .footerSection ul li a:hover {
+    text-decoration: underline; /* Add underline on hover */
+  }
+  
+  .footerSection p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .footerSection p a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  
+  .footerSection p a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Style for the icons in the Contact Us section */
+  .footerIcons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .footerIcons a {
+    margin: 0 10px;
+  }
+  
+  .footerIcons img {
+    width: 24px; /* Adjust icon size */
+    height: 24px;
+  }
+  
