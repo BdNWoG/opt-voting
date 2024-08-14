@@ -1,4 +1,5 @@
 import Initialization from './components/Initialization';
+import Measurement from './components/Measurement';
 
 export default function Home() {
   return (
@@ -19,10 +20,7 @@ export default function Home() {
         <p>Content for Results section...</p>
       </section>
 
-      <section id="measurement" style={{ padding: '20px 20px' }}>
-        <h2 className="section-heading">Measurement</h2>
-        <p>Content for Measurement section...</p>
-      </section>
+      <Measurement />
 
       <section id="explanation" style={{ padding: '20px 20px' }}>
         <h2 className="section-heading">Explanation</h2>

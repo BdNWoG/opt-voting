@@ -52,7 +52,7 @@ p.section-paragraph {
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20px;
-  width: 80%; /* Adjust width to ensure it's centered */
+  width: 90%; /* Adjust width to ensure it's centered */
   padding-top: 15px;
 }
 
