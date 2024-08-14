@@ -1,22 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  /* Color variables */
-  --foreground-rgb: 0, 0, 0; /* Black */
-  --background-start-rgb: 255, 245, 245; /* Light red-pink */
-  --background-end-rgb: 255, 255, 255; /* White */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255; /* White for dark mode text */
-    --background-start-rgb: 50, 10, 10; /* Darker red */
-    --background-end-rgb: 230, 57, 70; /* #e63946 */
-  }
-}
-
+/* General Body Padding */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -25,40 +7,67 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-  padding-left: 40px; /* Added left padding to the entire body */
+  padding-left: 40px; /* Left padding for the entire body */
 }
 
-/* Heading Styles */
-.section-heading {
-  font-size: 24px;
-  font-weight: bold;
-  color: #000000; /* Black color for headings */
-  font-family: 'Inter', sans-serif; /* Ensure it matches the title's font */
+/* Initialization Section Layout */
+.initialization-section {
+  padding-top: 40px;
+  padding-bottom: 20px;
+}
+
+/* Container for Each Pair of Input/Slider and Info */
+.box-pair {
+  display: flex;
+  align-items: flex-start;
   margin-bottom: 20px;
 }
 
-/* Paragraph Styles */
-.section-paragraph {
-  font-size: 16px;
-  color: rgb(var(--foreground-rgb));
-  font-family: 'Inter', sans-serif; /* Ensure it matches the default text */
-  line-height: 1.6;
+/* Input and Slider Boxes */
+.input-box, .slider-box {
+  background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
+  padding: 15px;
+  border-radius: 5px;
+  flex: 2; /* Takes 2/3 of the width */
+  margin-right: 20px; /* Space between box and info */
+}
+
+.variable-title {
+  font-size: 18px;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
-/* Section Styling */
-section {
-  padding-top: 40px; /* Space between header and first section */
-  margin-bottom: 20px; /* Reduced spacing between sections */
+.input-field, .slider {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
 }
 
-/* Adjust the first section for extra top padding */
-#description {
-  padding-top: 80px; /* Extra top padding between header and "Description" */
+.instruction, .slider-value {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555555;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.slider-value {
+  font-weight: bold;
+  color: #e63946;
+}
+
+/* Right Side: Information Boxes */
+.info-box {
+  flex: 1; /* Takes 1/3 of the width */
+}
+
+.info-box h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.info-box p {
+  font-size: 14px;
+  color: #333;
 }

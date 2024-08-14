@@ -1,3 +1,5 @@
+import Initialization from './components/Initialization';
+
 export default function Home() {
   return (
     <div>
@@ -9,12 +11,8 @@ export default function Home() {
         </p>
       </section>
 
-      <section id="initialization" style={{ padding: '20px 20px' }}>
-        <h2 className="section-heading">Initialization</h2>
-        <p className="section-paragraph">
-          This is a brief paragraph of text that describes the purpose of the Initialization section. 
-        </p>
-      </section>
+      {/* Use the Initialization component here */}
+      <Initialization />
 
       <section id="results" style={{ padding: '20px 20px' }}>
         <h2 className="section-heading">Results</h2>
