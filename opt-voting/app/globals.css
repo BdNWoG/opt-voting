@@ -9,6 +9,7 @@ body {
     )
     rgb(var(--background-start-rgb));
   padding-left: 40px; /* Left padding for the entire body */
+  padding-right: 40px; /* Left padding for the entire body */
   font-family: 'Inter', sans-serif; /* Ensure consistent font across the body */
 }
 
@@ -127,4 +128,44 @@ p.section-paragraph {
 
 .simulate-button:hover {
   background-color: #cc2b3a; /* Slightly darker red on hover */
+}
+
+/* Results Section Layout */
+.results-section {
+  padding-top: 40px;
+  padding-bottom: 20px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-gap: 20px; /* Space between the boxes */
+  margin-bottom: 20px; /* Space below the grid */
+}
+
+.result-box {
+  background-color: transparent; /* No fill */
+  border: 2px solid #e63946; /* Same border as slider boxes */
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* Height for the boxes */
+  width: 100%; /* Ensure full width */
+}
+
+.chart-image {
+  max-width: 90%; /* Ensure the placeholder image fits well */
+  max-height: 90%; /* Ensure the placeholder image fits well */
+  object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Dynamic Paragraph Styles */
+p.dynamic-paragraph {
+  font-size: 16px; /* Standard paragraph size */
+  line-height: 1.6; /* Improve readability with line height */
+  color: #333333; /* Darker shade for text */
+  margin-top: 20px; /* Space above the paragraph */
+  text-align: justify; /* Justify text for a cleaner look */
+  font-weight: 400; /* Regular weight */
 }

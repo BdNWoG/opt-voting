@@ -1,5 +1,6 @@
 import Initialization from './components/Initialization';
 import Measurement from './components/Measurement';
+import Results from './components/Results';
 
 export default function Home() {
   return (
@@ -15,10 +16,7 @@ export default function Home() {
       {/* Use the Initialization component here */}
       <Initialization />
 
-      <section id="results" style={{ padding: '20px 20px' }}>
-        <h2 className="section-heading">Results</h2>
-        <p>Content for Results section...</p>
-      </section>
+      <Results />
 
       <Measurement />
 
