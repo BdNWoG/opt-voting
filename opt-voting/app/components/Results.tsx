@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Pie, Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -27,13 +27,32 @@ ChartJS.register(
   ArcElement
 );
 
-interface ResultsProps {
-  votingResults?: {
-    [key: string]: { [project: string]: number }
-  };
+interface VotingResults {
+  [key: string]: { [project: string]: number }
 }
 
-const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
+const Results: React.FC = () => {
+  const [votingResults, setVotingResults] = useState<VotingResults | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Function to fetch the voting results from the backend API
+  const fetchVotingResults = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/simulate', { method: 'POST' }); // or GET, depending on your setup
+      const data = await response.json();
+      setVotingResults(data);  // Store the voting results in the state
+    } catch (error) {
+      console.error('Failed to fetch voting results:', error);
+    }
+    setLoading(false);
+  };
+
+  // Call the API when the Simulate button is pressed
+  const handleSimulate = () => {
+    fetchVotingResults();  // Fetch and update the voting results
+  };
+
   const generateChartData = (data: { [project: string]: number }) => {
     const labels = Object.keys(data);
     const values = Object.values(data);
@@ -60,7 +79,6 @@ const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
     };
   };
 
-  // Placeholder data if votingResults is empty
   const placeholderData = {
     labels: ['Placeholder Project 1', 'Placeholder Project 2', 'Placeholder Project 3'],
     datasets: [
@@ -78,7 +96,6 @@ const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
     ],
   };
 
-  // Generate data for 8 bar charts and pie charts based on voting results, or show placeholder data if empty
   const votingMechanisms = [
     'maxVotingResults',
     'quadraticNoAttackResults',
@@ -109,7 +126,6 @@ const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
     );
   });
 
-  // Placeholder scatter chart data
   const scatterChartData1 = {
     datasets: [
       {
@@ -138,9 +154,8 @@ const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
     ],
   };
 
-  // Generate dynamic text based on the voting results or placeholders
   const generateDynamicText = () => {
-    if (Object.keys(votingResults).length === 0) {
+    if (!votingResults) {
       return 'Currently displaying placeholder data. Once the actual voting results are available, they will be shown here.';
     }
 
@@ -164,6 +179,10 @@ const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
       <p className="section-paragraph">
         This section presents the results of the Optimism Voting Strategy analysis. The following charts and graphs provide a detailed breakdown of key metrics and insights derived from the data.
       </p>
+
+      <button onClick={handleSimulate} disabled={loading}>
+        {loading ? 'Simulating...' : 'Simulate'}
+      </button>
 
       <div className="results-grid">
         {/* Generate the 8 pairs of bar charts and pie charts */}
