@@ -185,6 +185,19 @@ export const meanVotingProjectEpsilonAttack = (votersData: VoterData[]): VotingR
   return results;
 };
 
+// 8. True Voting (New Mechanism)
+export const trueVoting = (votersData: VoterData[]): VotingResults => {
+  const results: VotingResults = {};
+  votersData.forEach(voter => {
+    const preferenceSum = normalizePreferences(voter);
+    voter.preferences.forEach((preference, i) => {
+      const voteAmount = (preference / preferenceSum) * voter.votingPower;
+      results[i] = (results[i] || 0) + voteAmount;
+    });
+  });
+  return results;
+};
+
 // Utility function to randomly select voters or projects
 function randomSelection<T>(arr: T[], num: number): T[] {
   return arr.sort(() => 0.5 - Math.random()).slice(0, num);

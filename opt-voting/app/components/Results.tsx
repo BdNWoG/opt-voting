@@ -27,81 +27,73 @@ ChartJS.register(
   ArcElement
 );
 
-const Results: React.FC = () => {
-  // Placeholder data for each bar chart
-  const barChartData1 = {
-    labels: ['Category 1', 'Category 2', 'Category 3'],
-    datasets: [
-      {
-        label: 'Votes',
-        data: [12, 19, 3],
-        backgroundColor: 'rgba(230, 57, 70, 0.6)',
-        borderColor: '#e63946',
-        borderWidth: 1,
-      },
-    ],
+interface ResultsProps {
+  votingResults: {
+    [key: string]: { [project: string]: number }
+  };
+}
+
+const Results: React.FC<ResultsProps> = ({ votingResults }) => {
+  const generateChartData = (data: { [project: string]: number }) => {
+    const labels = Object.keys(data);
+    const values = Object.values(data);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Votes',
+          data: values,
+          backgroundColor: [
+            'rgba(230, 57, 70, 0.6)',
+            'rgba(34, 202, 236, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(255, 205, 86, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+          ],
+          borderColor: '#e63946',
+          borderWidth: 1,
+        },
+      ],
+    };
   };
 
-  const barChartData2 = {
-    labels: ['Category A', 'Category B', 'Category C'],
-    datasets: [
-      {
-        label: 'Votes',
-        data: [20, 10, 15],
-        backgroundColor: 'rgba(34, 202, 236, 0.6)',
-        borderColor: '#22caec',
-        borderWidth: 1,
-      },
-    ],
-  };
+  // Generate data for 8 bar charts and pie charts based on voting results
+  const votingMechanisms = [
+    'maxVotingResults',
+    'quadraticNoAttackResults',
+    'meanNoAttackResults',
+    'quadraticVoterCollusionResults',
+    'quadraticProjectCollusionResults',
+    'meanVoterEpsilonResults',
+    'meanProjectEpsilonResults',
+    'trueVotingResults'
+  ];
 
-  const barChartData3 = {
-    labels: ['Segment X', 'Segment Y', 'Segment Z'],
-    datasets: [
-      {
-        label: 'Votes',
-        data: [8, 14, 18],
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: '#36a2eb',
-        borderWidth: 1,
-      },
-    ],
-  };
+  const chartPairs = votingMechanisms.map((mechanism) => {
+    const data = votingResults[mechanism];
+    const barChartData = generateChartData(data);
+    const pieChartData = generateChartData(data);
 
-  const barChartData4 = {
-    labels: ['Item 1', 'Item 2', 'Item 3'],
-    datasets: [
-      {
-        label: 'Votes',
-        data: [25, 5, 20],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: '#4bc0c0',
-        borderWidth: 1,
-      },
-    ],
-  };
+    return (
+      <React.Fragment key={mechanism}>
+        <div className="result-box">
+          <Bar data={barChartData} />
+        </div>
+        <div className="result-box">
+          <Pie data={pieChartData} />
+        </div>
+      </React.Fragment>
+    );
+  });
 
-  const pieChartData = {
-    labels: ['Option A', 'Option B', 'Option C'],
+  // Placeholder scatter chart data
+  const scatterChartData1 = {
     datasets: [
       {
-        label: 'Distribution',
-        data: [10, 20, 30],
-        backgroundColor: [
-          'rgba(230, 57, 70, 0.6)',
-          'rgba(34, 202, 236, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-        ],
-        borderColor: '#e63946',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const scatterChartData = {
-    datasets: [
-      {
-        label: 'Scatter Data',
+        label: 'Scatter Data 1',
         data: [
           { x: 10, y: 20 },
           { x: 20, y: 30 },
@@ -112,21 +104,32 @@ const Results: React.FC = () => {
     ],
   };
 
-  // Generate dynamic text based on data
+  const scatterChartData2 = {
+    datasets: [
+      {
+        label: 'Scatter Data 2',
+        data: [
+          { x: 15, y: 25 },
+          { x: 25, y: 35 },
+          { x: 35, y: 15 },
+        ],
+        backgroundColor: 'rgba(34, 202, 236, 0.6)',
+      },
+    ],
+  };
+
+  // Generate dynamic text based on the voting results
   const generateDynamicText = () => {
-    const totalVotes1 = barChartData1.datasets[0].data.reduce((a, b) => a + b, 0);
-    const maxVotes1 = Math.max(...barChartData1.datasets[0].data);
-    const maxCategory1 = barChartData1.labels[barChartData1.datasets[0].data.indexOf(maxVotes1)];
+    const summaries = votingMechanisms.map((mechanism, index) => {
+      const data = votingResults[mechanism];
+      const totalVotes = Object.values(data).reduce((a, b) => a + b, 0);
+      const maxVotes = Math.max(...Object.values(data));
+      const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
 
-    const totalVotes2 = barChartData2.datasets[0].data.reduce((a, b) => a + b, 0);
-    const maxVotes2 = Math.max(...barChartData2.datasets[0].data);
-    const maxCategory2 = barChartData2.labels[barChartData2.datasets[0].data.indexOf(maxVotes2)];
+      return `Mechanism ${index + 1}: Total votes: ${totalVotes}, Highest votes received by ${maxProject} (${maxVotes} votes).`;
+    });
 
-    const totalVotes3 = barChartData3.datasets[0].data.reduce((a, b) => a + b, 0);
-    const maxVotes3 = Math.max(...barChartData3.datasets[0].data);
-    const maxCategory3 = barChartData3.labels[barChartData3.datasets[0].data.indexOf(maxVotes3)];
-
-    return `The above charts illustrate various metrics. The first bar chart shows a total of ${totalVotes1} votes, with ${maxCategory1} receiving the highest number of votes (${maxVotes1}). The second and third bar charts depict additional categories, with ${maxCategory2} and ${maxCategory3} leading their respective groups. The pie chart and scatter plot further highlight the distribution and relationships in the data.`;
+    return summaries.join(' ');
   };
 
   return (
@@ -137,23 +140,15 @@ const Results: React.FC = () => {
       </p>
 
       <div className="results-grid">
+        {/* Generate the 8 pairs of bar charts and pie charts */}
+        {chartPairs}
+
+        {/* Scatter plots */}
         <div className="result-box">
-          <Bar data={barChartData1} />
+          <Scatter data={scatterChartData1} />
         </div>
         <div className="result-box">
-          <Bar data={barChartData2} />
-        </div>
-        <div className="result-box">
-          <Bar data={barChartData3} />
-        </div>
-        <div className="result-box">
-          <Pie data={pieChartData} />
-        </div>
-        <div className="result-box">
-          <Scatter data={scatterChartData} />
-        </div>
-        <div className="result-box">
-          <Bar data={barChartData4} />
+          <Scatter data={scatterChartData2} />
         </div>
       </div>
 

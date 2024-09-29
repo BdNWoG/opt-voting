@@ -12,6 +12,7 @@ import {
   quadraticVotingProjectCollusionAttack,
   meanVotingVoterEpsilonAttack,
   meanVotingProjectEpsilonAttack,
+  trueVoting, // Import the new True Voting function
 } from '../../utils/votingMechanisms'; // Import voting functions
 import { VoterData } from '../../utils/types'; // Import VoterData type
 
@@ -111,6 +112,7 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const quadraticProjectCollusionResults = quadraticVotingProjectCollusionAttack(votersData);
     const meanVoterEpsilonResults = meanVotingVoterEpsilonAttack(votersData);
     const meanProjectEpsilonResults = meanVotingProjectEpsilonAttack(votersData);
+    const trueVotingResults = trueVoting(votersData); // Execute the new True Voting
 
     // Return results of all voting mechanisms
     res.status(200).json({
@@ -121,6 +123,7 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       quadraticProjectCollusionResults,
       meanVoterEpsilonResults,
       meanProjectEpsilonResults,
+      trueVotingResults, // Include the True Voting results
     });
   } catch (error) {
     console.error('Error processing files:', error);
