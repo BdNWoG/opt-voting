@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bar, Pie, Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,30 +28,44 @@ ChartJS.register(
 );
 
 interface VotingResults {
-  [key: string]: { [project: string]: number }
+  [key: string]: { [project: string]: number };
 }
 
-const Results: React.FC = () => {
-  const [votingResults, setVotingResults] = useState<VotingResults | null>(null);
+interface ResultsProps {
+  votingResults: VotingResults | null;
+}
+
+const Results: React.FC<ResultsProps> = ({ votingResults }) => {
   const [loading, setLoading] = useState(false);
 
-  // Function to fetch the voting results from the backend API
-  const fetchVotingResults = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/simulate', { method: 'POST' }); // or GET, depending on your setup
-      const data = await response.json();
-      setVotingResults(data);  // Store the voting results in the state
-    } catch (error) {
-      console.error('Failed to fetch voting results:', error);
-    }
-    setLoading(false);
+  useEffect(() => {
+    console.log('Received updated voting results:', votingResults);
+  }, [votingResults]);
+
+  // Placeholder data for charts if no votingResults yet
+  const placeholderData = {
+    labels: ['Placeholder Project 1', 'Placeholder Project 2', 'Placeholder Project 3'],
+    datasets: [
+      {
+        label: 'Votes',
+        data: [20, 30, 50],
+        backgroundColor: ['rgba(230, 57, 70, 0.6)', 'rgba(34, 202, 236, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+        borderColor: '#e63946',
+        borderWidth: 1,
+      },
+    ],
   };
 
-  // Call the API when the Simulate button is pressed
-  const handleSimulate = () => {
-    fetchVotingResults();  // Fetch and update the voting results
-  };
+  const votingMechanisms = [
+    'maxVotingResults',
+    'quadraticNoAttackResults',
+    'meanNoAttackResults',
+    'quadraticVoterCollusionResults',
+    'quadraticProjectCollusionResults',
+    'meanVoterEpsilonResults',
+    'meanProjectEpsilonResults',
+    'trueVotingResults'
+  ];
 
   const generateChartData = (data: { [project: string]: number }) => {
     const labels = Object.keys(data);
@@ -79,36 +93,8 @@ const Results: React.FC = () => {
     };
   };
 
-  const placeholderData = {
-    labels: ['Placeholder Project 1', 'Placeholder Project 2', 'Placeholder Project 3'],
-    datasets: [
-      {
-        label: 'Votes',
-        data: [20, 30, 50],
-        backgroundColor: [
-          'rgba(230, 57, 70, 0.6)',
-          'rgba(34, 202, 236, 0.6)',
-          'rgba(54, 162, 235, 0.6)'
-        ],
-        borderColor: '#e63946',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const votingMechanisms = [
-    'maxVotingResults',
-    'quadraticNoAttackResults',
-    'meanNoAttackResults',
-    'quadraticVoterCollusionResults',
-    'quadraticProjectCollusionResults',
-    'meanVoterEpsilonResults',
-    'meanProjectEpsilonResults',
-    'trueVotingResults'
-  ];
-
   const chartPairs = votingMechanisms.map((mechanism) => {
-    const data = votingResults?.[mechanism] || {}; // Use empty object if no data for the mechanism
+    const data = votingResults?.[mechanism] || {}; // Use empty object if no data
     const hasData = Object.keys(data).length > 0;
 
     const barChartData = hasData ? generateChartData(data) : placeholderData;
@@ -179,10 +165,6 @@ const Results: React.FC = () => {
       <p className="section-paragraph">
         This section presents the results of the Optimism Voting Strategy analysis. The following charts and graphs provide a detailed breakdown of key metrics and insights derived from the data.
       </p>
-
-      <button onClick={handleSimulate} disabled={loading}>
-        {loading ? 'Simulating...' : 'Simulate'}
-      </button>
 
       <div className="results-grid">
         {/* Generate the 8 pairs of bar charts and pie charts */}
