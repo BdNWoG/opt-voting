@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import multer from 'multer';
-import path from 'path';
 import fs from 'fs';
 import { parse } from 'csv-parse';
 import {
@@ -11,15 +10,11 @@ import {
   quadraticVotingProjectCollusionAttack,
   meanVotingVoterEpsilonAttack,
   meanVotingProjectEpsilonAttack,
-  trueVoting
+  trueVoting,
 } from '../../utils/votingMechanisms'; // Import voting functions
 
 // Directory for storing uploaded files
-const uploadDir = path.join(process.cwd(), 'uploads');
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+const uploadDir = '/tmp'; // Use tmp for temporary file storage
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -163,27 +158,17 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log('Generating CSV for voting results');
     const csvContent = generateCSV(votingResults);
 
-    const resultFilePath = path.join(uploadDir, 'voting_results.csv');
-    fs.writeFileSync(resultFilePath, csvContent);
-
-    // Delete the CSV files from 'uploads' after processing
-    fs.unlink(voterFilePath, (err) => {
-      if (err) console.error('Error deleting voterFile:', err);
-      else console.log('Deleted voterFile:', voterFilePath);
-    });
-    fs.unlink(votingPowerFilePath, (err) => {
-      if (err) console.error('Error deleting votingPowerFile:', err);
-      else console.log('Deleted votingPowerFile:', votingPowerFilePath);
-    });
-
-    // Send the CSV file as response
+    // Send the CSV file as response without saving it to disk
     res.setHeader('Content-Disposition', 'attachment; filename=voting_results.csv');
     res.setHeader('Content-Type', 'text/csv');
-    fs.createReadStream(resultFilePath).pipe(res);
-
+    res.status(200).send(csvContent);
   } catch (error) {
     console.error('Error processing files:', error);
     res.status(500).json({ error: 'Error processing files' });
+  } finally {
+    // Cleanup: remove uploaded files
+    fs.unlinkSync(voterFilePath);
+    fs.unlinkSync(votingPowerFilePath);
   }
 };
 

@@ -161,10 +161,8 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
       </p>
 
       <div className="results-grid">
-        {/* Generate the 8 pairs of bar charts and pie charts */}
         {chartPairs}
 
-        {/* Scatter plots */}
         <div className="result-box">
           <Scatter data={scatterChartData1} />
         </div>

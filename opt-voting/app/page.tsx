@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Initialization from './components/Initialization';
-import Measurement from './components/Measurement';
 import Results from './components/Results';
+import Measurement from './components/Measurement';
 
 export default function Home() {
   // Manage the voting results state here
