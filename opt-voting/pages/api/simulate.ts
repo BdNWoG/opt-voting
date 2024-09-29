@@ -57,11 +57,13 @@ function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) 
 const parseCSV = async (filePath: string): Promise<any[]> => {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   return new Promise((resolve, reject) => {
-    parse(fileContent, { trim: true }, (err, records) => {
+    parse(fileContent, { trim: true, skip_records_with_empty_values: true }, (err, records) => {
       if (err) {
         reject(err);
       }
-      resolve(records);
+      // Skip the first row, which contains the titles
+      const dataWithoutHeaders = records.slice(1); // Skips the first row (headers)
+      resolve(dataWithoutHeaders);
     });
   });
 };
@@ -102,11 +104,11 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const votingPowerMatrix = await parseCSV(votingPowerFilePath);
 
     const votersData = preferenceMatrix.map((preferences, index) => {
-      const votingPower = votingPowerMatrix[index][0];
+      const votingPower = votingPowerMatrix[index][1]; // Using the correct column, skipping header
       return {
-        voterId: index + 1,
-        preferences: preferences.map(Number),
-        votingPower: Number(votingPower),
+        voterId: index + 1, // Assuming voter ID is based on index
+        preferences: preferences.slice(1).map(Number), // Skip the first column which contains titles
+        votingPower: Number(votingPower), // Ensure votingPower is a number
       };
     });
 
@@ -164,10 +166,21 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const resultFilePath = path.join(uploadDir, 'voting_results.csv');
     fs.writeFileSync(resultFilePath, csvContent);
 
+    // Delete the CSV files from 'uploads' after processing
+    fs.unlink(voterFilePath, (err) => {
+      if (err) console.error('Error deleting voterFile:', err);
+      else console.log('Deleted voterFile:', voterFilePath);
+    });
+    fs.unlink(votingPowerFilePath, (err) => {
+      if (err) console.error('Error deleting votingPowerFile:', err);
+      else console.log('Deleted votingPowerFile:', votingPowerFilePath);
+    });
+
     // Send the CSV file as response
     res.setHeader('Content-Disposition', 'attachment; filename=voting_results.csv');
     res.setHeader('Content-Type', 'text/csv');
     fs.createReadStream(resultFilePath).pipe(res);
+
   } catch (error) {
     console.error('Error processing files:', error);
     res.status(500).json({ error: 'Error processing files' });
