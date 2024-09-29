@@ -1,8 +1,14 @@
+'use client'
+
+import { useState } from 'react';
 import Initialization from './components/Initialization';
 import Measurement from './components/Measurement';
 import Results from './components/Results';
 
 export default function Home() {
+  // Manage the voting results state here
+  const [votingResults, setVotingResults] = useState(null);
+
   return (
     <div>
       <section id="description" style={{ padding: '50px 20px 0px' }}>
@@ -13,10 +19,11 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Use the Initialization component here */}
-      <Initialization />
+      {/* Pass setVotingResults to Initialization to receive the results */}
+      <Initialization setVotingResults={setVotingResults} />
 
-      <Results />
+      {/* Pass votingResults to Results to update the charts */}
+      <Results votingResults={votingResults} />
 
       <Measurement />
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Bar, Pie, Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -31,18 +31,12 @@ interface VotingResults {
   [key: string]: { [project: string]: number };
 }
 
-interface ResultsProps {
-  votingResults: VotingResults | null;
-}
-
-const Results: React.FC<ResultsProps> = ({ votingResults }) => {
-  const [loading, setLoading] = useState(false);
-
+const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResults }) => {
   useEffect(() => {
-    console.log('Received updated voting results:', votingResults);
+    console.log('Voting results updated in Results component:', votingResults); // Check if results are passed
   }, [votingResults]);
 
-  // Placeholder data for charts if no votingResults yet
+  // Placeholder data if no votingResults yet
   const placeholderData = {
     labels: ['Placeholder Project 1', 'Placeholder Project 2', 'Placeholder Project 3'],
     datasets: [

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-const Initialization: React.FC = () => {
+const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ setVotingResults }) => {
   const [voterFile, setVoterFile] = useState<File | null>(null);
   const [votingPowerFile, setVotingPowerFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -33,11 +33,9 @@ const Initialization: React.FC = () => {
 
       const data = await response.json();
       console.log('Simulation results:', data);
-      
-      // Trigger chart update with voting results here (pass data to Results component)
-      // You can use a state or context to update charts in Results.tsx
-      // e.g., setVotingResults(data);
 
+      // Pass the voting results to the parent component to update the charts
+      setVotingResults(data);
     } catch (error) {
       console.error('Error in simulation:', error);
     }
