@@ -28,12 +28,12 @@ ChartJS.register(
 );
 
 interface ResultsProps {
-  votingResults: {
+  votingResults?: {
     [key: string]: { [project: string]: number }
   };
 }
 
-const Results: React.FC<ResultsProps> = ({ votingResults }) => {
+const Results: React.FC<ResultsProps> = ({ votingResults = {} }) => {
   const generateChartData = (data: { [project: string]: number }) => {
     const labels = Object.keys(data);
     const values = Object.values(data);
@@ -60,7 +60,25 @@ const Results: React.FC<ResultsProps> = ({ votingResults }) => {
     };
   };
 
-  // Generate data for 8 bar charts and pie charts based on voting results
+  // Placeholder data if votingResults is empty
+  const placeholderData = {
+    labels: ['Placeholder Project 1', 'Placeholder Project 2', 'Placeholder Project 3'],
+    datasets: [
+      {
+        label: 'Votes',
+        data: [20, 30, 50],
+        backgroundColor: [
+          'rgba(230, 57, 70, 0.6)',
+          'rgba(34, 202, 236, 0.6)',
+          'rgba(54, 162, 235, 0.6)'
+        ],
+        borderColor: '#e63946',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Generate data for 8 bar charts and pie charts based on voting results, or show placeholder data if empty
   const votingMechanisms = [
     'maxVotingResults',
     'quadraticNoAttackResults',
@@ -73,9 +91,11 @@ const Results: React.FC<ResultsProps> = ({ votingResults }) => {
   ];
 
   const chartPairs = votingMechanisms.map((mechanism) => {
-    const data = votingResults[mechanism];
-    const barChartData = generateChartData(data);
-    const pieChartData = generateChartData(data);
+    const data = votingResults?.[mechanism] || {}; // Use empty object if no data for the mechanism
+    const hasData = Object.keys(data).length > 0;
+
+    const barChartData = hasData ? generateChartData(data) : placeholderData;
+    const pieChartData = hasData ? generateChartData(data) : placeholderData;
 
     return (
       <React.Fragment key={mechanism}>
@@ -118,10 +138,16 @@ const Results: React.FC<ResultsProps> = ({ votingResults }) => {
     ],
   };
 
-  // Generate dynamic text based on the voting results
+  // Generate dynamic text based on the voting results or placeholders
   const generateDynamicText = () => {
+    if (Object.keys(votingResults).length === 0) {
+      return 'Currently displaying placeholder data. Once the actual voting results are available, they will be shown here.';
+    }
+
     const summaries = votingMechanisms.map((mechanism, index) => {
-      const data = votingResults[mechanism];
+      const data = votingResults?.[mechanism];
+      if (!data || Object.keys(data).length === 0) return `Mechanism ${index + 1}: No data available.`;
+
       const totalVotes = Object.values(data).reduce((a, b) => a + b, 0);
       const maxVotes = Math.max(...Object.values(data));
       const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
