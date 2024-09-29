@@ -3,17 +3,22 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { parse } from 'csv-parse';
+import {
+  maxVoting,
+  quadraticVotingNoAttack,
+  meanVotingNoAttack,
+  quadraticVotingVoterCollusionAttack,
+  quadraticVotingProjectCollusionAttack,
+  meanVotingVoterEpsilonAttack,
+  meanVotingProjectEpsilonAttack,
+} from '../../utils/votingMechanisms'; // Import voting functions
+import { VoterData } from '../../utils/types'; // Import VoterData type
 
-// Extend NextApiRequest to include Multer's file typings
-interface MulterNextApiRequest extends NextApiRequest {
-  files: {
-    [key: string]: Express.Multer.File[];
-  };
-}
-
+// Directory for storing uploaded files
 const uploadDir = path.join(process.cwd(), 'uploads');
 
-// Ensure the uploads directory exists
+// Ensure the upload directory exists
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
@@ -28,10 +33,9 @@ const storage = multer.diskStorage({
   },
 });
 
-// Initialize multer with the storage configuration
 const upload = multer({ storage });
 
-// Disable Next.js body parsing to allow multer to handle form-data
+// Disable body parsing for the file upload route
 export const config = {
   api: {
     bodyParser: false,
@@ -44,7 +48,7 @@ const multerMiddleware = upload.fields([
   { name: 'votingPowerFile', maxCount: 1 },
 ]);
 
-// Wrapper for Next.js to handle custom middleware
+// Helper to run multer middleware
 function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result: any) => {
@@ -56,25 +60,72 @@ function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) 
   });
 }
 
-const simulateHandler = async (req: MulterNextApiRequest, res: NextApiResponse) => {
+// Function to read and parse a CSV file
+const parseCSV = async (filePath: string): Promise<any[]> => {
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  return new Promise((resolve, reject) => {
+    parse(fileContent, { trim: true }, (err, records) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(records);
+    });
+  });
+};
+
+const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   await runMiddleware(req, res, multerMiddleware);
 
-  const voterFile = req.files?.['voterFile']?.[0]; // Access the first 'voterFile'
-  const votingPowerFile = req.files?.['votingPowerFile']?.[0]; // Access the first 'votingPowerFile'
+  const voterFile = req.files?.['voterFile']?.[0];
+  const votingPowerFile = req.files?.['votingPowerFile']?.[0];
 
   if (!voterFile || !votingPowerFile) {
     return res.status(400).json({ error: 'Files are missing' });
   }
 
-  // Example: Read the files and do something with them (process them for your simulation)
-  const resultFilePath = path.join(uploadDir, 'simulation-result.csv');
-  
-  // Simulate generating a CSV result
-  fs.writeFileSync(resultFilePath, 'Column1,Column2\nData1,Data2\n'); // Example CSV data
+  // Paths to the uploaded files
+  const voterFilePath = voterFile.path;
+  const votingPowerFilePath = votingPowerFile.path;
 
-  res.setHeader('Content-Disposition', 'attachment; filename=simulation-result.csv');
-  res.setHeader('Content-Type', 'text/csv');
-  fs.createReadStream(resultFilePath).pipe(res); // Stream the file back to the client
+  try {
+    // Parse the voterFile (preference matrix)
+    const preferenceMatrix = await parseCSV(voterFilePath);
+    // Parse the votingPowerFile (voter power matrix)
+    const votingPowerMatrix = await parseCSV(votingPowerFilePath);
+
+    // Correlating voter preferences and voting power
+    const votersData: VoterData[] = preferenceMatrix.map((preferences, index) => {
+      const votingPower = votingPowerMatrix[index][0]; // Assuming only one column for voting power
+      return {
+        voterId: index + 1, // Voter ID starting from 1
+        preferences: preferences.map(Number), // Preferences as an array of numbers
+        votingPower: Number(votingPower), // Voting power as a number
+      };
+    });
+
+    // Execute voting mechanisms
+    const maxVotingResults = maxVoting(votersData);
+    const quadraticNoAttackResults = quadraticVotingNoAttack(votersData);
+    const meanNoAttackResults = meanVotingNoAttack(votersData);
+    const quadraticVoterCollusionResults = quadraticVotingVoterCollusionAttack(votersData);
+    const quadraticProjectCollusionResults = quadraticVotingProjectCollusionAttack(votersData);
+    const meanVoterEpsilonResults = meanVotingVoterEpsilonAttack(votersData);
+    const meanProjectEpsilonResults = meanVotingProjectEpsilonAttack(votersData);
+
+    // Return results of all voting mechanisms
+    res.status(200).json({
+      maxVotingResults,
+      quadraticNoAttackResults,
+      meanNoAttackResults,
+      quadraticVoterCollusionResults,
+      quadraticProjectCollusionResults,
+      meanVoterEpsilonResults,
+      meanProjectEpsilonResults,
+    });
+  } catch (error) {
+    console.error('Error processing files:', error);
+    res.status(500).json({ error: 'Error processing files' });
+  }
 };
 
 export default simulateHandler;

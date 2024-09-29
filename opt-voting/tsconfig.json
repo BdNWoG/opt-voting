@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "target": "es2015", // <-- Add target option here
     "plugins": [
       {
         "name": "next"
@@ -22,7 +23,7 @@
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./types"  // <-- This is where custom types like multer.d.ts are placed
+      "./types"
     ]
   },
   "include": [
@@ -30,7 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "types/**/*.d.ts"  // <-- Ensure custom type declarations are included
+    "types/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }
