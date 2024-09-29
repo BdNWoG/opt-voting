@@ -65,7 +65,7 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
   ];
 
   const generateChartData = (data: { [project: string]: number }) => {
-    const labels = Object.keys(data);
+    const labels = Object.keys(data).map((project) => `Project ${project}`);
     const values = Object.values(data);
 
     return {
@@ -150,7 +150,7 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
       const maxVotes = Math.max(...Object.values(data));
       const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
 
-      return `Mechanism ${index + 1}: Total votes: ${totalVotes}, Highest votes received by ${maxProject} (${maxVotes} votes).`;
+      return `Mechanism ${index + 1}: Total votes: ${totalVotes}, Highest votes received by Project ${maxProject} (${maxVotes} votes).`;
     });
 
     return summaries.join(' ');

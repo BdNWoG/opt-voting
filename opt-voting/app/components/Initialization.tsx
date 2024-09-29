@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Papa from 'papaparse';  // Import PapaParse for CSV parsing
 
 const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ setVotingResults }) => {
   const [voterFile, setVoterFile] = useState<File | null>(null);
@@ -26,17 +27,56 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
     formData.append('votingPowerFile', votingPowerFile);
   
     try {
+      console.log("Starting simulation...");
+  
       const response = await fetch('/api/simulate', {
         method: 'POST',
         body: formData,
       });
   
+      console.log("Response received:", response);
+  
       if (!response.ok) {
         throw new Error('Failed to simulate');
       }
   
-      // Handle the Blob (CSV file download)
+      // Handle CSV Blob response
       const blobResponse = await response.blob();
+      const csvText = await blobResponse.text(); // Convert blob to text
+  
+      console.log("Fetched CSV Response:", csvText);
+  
+      // Parse CSV using PapaParse
+      Papa.parse(csvText, {
+        header: true, // Assumes the first row contains headers
+        complete: (results) => {
+          console.log('Parsed CSV:', results.data);
+  
+          // Initialize an empty object to hold all mechanisms and projects
+          const parsedResults: any = {};
+  
+          results.data.forEach((row: any) => {
+            const mechanism = row.Mechanism;
+            const project = row.Project;
+            const votes = parseFloat(row.Votes);
+  
+            // If this mechanism doesn't exist in parsedResults, initialize it
+            if (!parsedResults[mechanism]) {
+              parsedResults[mechanism] = {};
+            }
+  
+            // Add the votes for each project under the respective mechanism
+            parsedResults[mechanism][project] = votes;
+          });
+  
+          console.log("Parsed Voting Results for Charts:", parsedResults);
+  
+          // Update state with parsed data
+          setVotingResults(parsedResults); // Pass the parsed CSV results
+        },
+      });
+  
+      // Handle file download for CSV
       const url = window.URL.createObjectURL(blobResponse);
       const a = document.createElement('a');
       a.href = url;
@@ -45,19 +85,14 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       a.click();
       a.remove();
   
-      // Handle JSON result
-      const jsonResponse = await response.clone().json(); // Clone response to handle JSON separately
-      console.log('Fetched JSON Response:', jsonResponse); // Debugging log
-  
-      setVotingResults(jsonResponse); // This will update the Results component
-  
+      console.log("CSV file download triggered.");
     } catch (error) {
       console.error('Error in simulation:', error);
     }
   
     setLoading(false);
   };
-
+  
   return (
     <section id="initialization" className="initialization-section" style={{ padding: '20px 20px' }}>
       <h2 className="section-heading">Initialization</h2>
