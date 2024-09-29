@@ -72,10 +72,47 @@ p.section-paragraph {
   margin-bottom: 10px;
 }
 
-.input-field, .slider {
+/* Input Field Style */
+.input-field {
   width: 95%; /* Reduced width to ensure it stays within the box */
   padding: 10px;
   margin-top: 5px;
+  border: 1px solid #ccc; /* Add border to input field */
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Style the dropdown menu to match the original input field */
+select.input-field {
+  background-color: white; /* Same background as the original input */
+  color: #333333; /* Text color */
+  border: 1px solid #ccc; /* Border similar to an input field */
+  padding: 10px; /* Same padding as input field */
+  width: 95%; /* Same width as the input field */
+  border-radius: 5px; /* Same rounded corners */
+  margin-top: 5px; /* Space similar to input field */
+  font-size: 16px; /* Font size to match input field */
+  font-family: 'Inter', sans-serif; /* Consistent font family */
+  appearance: none; /* Removes the default dropdown arrow styling */
+}
+
+/* Customize dropdown arrow for the select field */
+select.input-field::after {
+  content: "▼"; /* Custom dropdown arrow */
+  padding-left: 10px;
+  color: #555555;
+}
+
+/* Dropdown hover effect similar to the input field */
+select.input-field:hover {
+  border-color: #e63946; /* Border changes to red on hover */
+}
+
+/* Optional: Focus effect to highlight the dropdown when it's active */
+select.input-field:focus {
+  outline: none;
+  border-color: #e63946; /* Highlight border when the dropdown is focused */
+  box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Slight shadow for focus */
 }
 
 .instruction, .slider-value {
@@ -171,4 +208,25 @@ p.dynamic-paragraph {
   margin-top: 20px; /* Space above the paragraph */
   text-align: justify; /* Justify text for a cleaner look */
   font-weight: 400; /* Regular weight */
+}
+
+/* Style the file input to match the input-field class */
+input[type="file"].input-field {
+  background-color: white; /* White background */
+  border: 1px solid #ccc; /* Same border as input field */
+  padding: 10px; /* Padding similar to other input fields */
+  width: 95%; /* Same width as the other input fields */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Match font size */
+  font-family: 'Inter', sans-serif; /* Consistent font family */
+}
+
+input[type="file"].input-field:hover {
+  border-color: #e63946; /* Red border on hover */
+}
+
+input[type="file"].input-field:focus {
+  outline: none;
+  border-color: #e63946; /* Highlight border when focused */
+  box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Shadow effect on focus */
 }
