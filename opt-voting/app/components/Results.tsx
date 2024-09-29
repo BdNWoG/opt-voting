@@ -34,6 +34,9 @@ interface VotingResults {
 const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResults }) => {
   useEffect(() => {
     console.log('Voting results updated in Results component:', votingResults); // Check if results are passed
+    if (!votingResults) {
+      console.log('No voting results yet!');
+    }
   }, [votingResults]);
 
   // Placeholder data if no votingResults yet

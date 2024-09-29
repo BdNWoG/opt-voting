@@ -35,9 +35,9 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         throw new Error('Failed to simulate');
       }
 
-      // Get the blob (CSV file) from the response for download
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      // Handle the Blob (CSV file download)
+      const blobResponse = await response.blob(); // This handles the file part of the response.
+      const url = window.URL.createObjectURL(blobResponse);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'voting_results.csv';
@@ -45,9 +45,10 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       a.click();
       a.remove();
 
-      // Fetch the JSON results and update charts
-      const jsonResponse = await response.json();
-      setVotingResults(jsonResponse); // This updates the Results component
+      // Now handle the JSON result
+      const jsonResponse = await response.clone().json(); // Clone response to handle JSON separately
+      console.log('Fetched JSON Response:', jsonResponse);
+      setVotingResults(jsonResponse); // This will update the Results component
 
     } catch (error) {
       console.error('Error in simulation:', error);
