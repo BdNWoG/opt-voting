@@ -25,7 +25,8 @@ export default function Home() {
       {/* Pass the votingResults to the Results component to update the charts */}
       <Results votingResults={votingResults} />
 
-      <Measurement />
+      {/* Pass the votingResults to the Measurement component to calculate and display the measurements */}
+      <Measurement votingResults={votingResults} />
 
       <section id="explanation" style={{ padding: '20px 20px' }}>
         <h2 className="section-heading">Explanation</h2>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { Bar, Pie, Scatter } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,8 +10,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  PointElement,
-  LineElement,
   ArcElement
 } from 'chart.js';
 
@@ -22,8 +20,6 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  PointElement,
-  LineElement,
   ArcElement
 );
 
@@ -90,70 +86,150 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     };
   };
 
+  // Bar chart options without a legend
+  const generateChartOptions = (chartTitle: string) => ({
+    plugins: {
+      title: {
+        display: true,
+        text: chartTitle,
+        font: {
+          size: 20,
+        },
+      },
+      legend: {
+        display: false, // Remove legend from the bar chart
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Projects',
+          font: {
+            size: 14,
+          },
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Votes',
+          font: {
+            size: 14,
+          },
+        },
+        beginAtZero: true,
+      },
+    },
+  });
+
+  // Pie chart options without axis and axis titles
+  const generatePieChartOptions = (chartTitle: string) => ({
+    plugins: {
+      title: {
+        display: true,
+        text: chartTitle,
+        font: {
+          size: 20,
+        },
+      },
+      legend: {
+        display: true,
+        position: 'top' as const, // Place the legend on top
+        align: 'center' as const, // Align the legend in the center
+        labels: {
+          boxWidth: 20, // Size of the color box in the legend
+          padding: 10,
+        },
+      },
+    },
+  });
+
   const chartPairs = votingMechanisms.map((mechanism) => {
     const data = votingResults?.[mechanism] || {}; // Use empty object if no data
     const hasData = Object.keys(data).length > 0;
 
     const barChartData = hasData ? generateChartData(data) : placeholderData;
+    const barChartOptions = generateChartOptions(`${mechanism} - Bar Chart`);
+
     const pieChartData = hasData ? generateChartData(data) : placeholderData;
+    const pieChartOptions = generatePieChartOptions(`${mechanism} - Pie Chart`);
 
     return (
       <React.Fragment key={mechanism}>
         <div className="result-box">
-          <Bar data={barChartData} />
+          <Bar data={barChartData} options={barChartOptions} />
         </div>
         <div className="result-box">
-          <Pie data={pieChartData} />
+          <Pie data={pieChartData} options={pieChartOptions} />
         </div>
       </React.Fragment>
     );
   });
 
-  const scatterChartData1 = {
-    datasets: [
-      {
-        label: 'Scatter Data 1',
-        data: [
-          { x: 10, y: 20 },
-          { x: 20, y: 30 },
-          { x: 30, y: 10 },
-        ],
-        backgroundColor: 'rgba(230, 57, 70, 0.6)',
-      },
-    ],
-  };
-
-  const scatterChartData2 = {
-    datasets: [
-      {
-        label: 'Scatter Data 2',
-        data: [
-          { x: 15, y: 25 },
-          { x: 25, y: 35 },
-          { x: 35, y: 15 },
-        ],
-        backgroundColor: 'rgba(34, 202, 236, 0.6)',
-      },
-    ],
-  };
-
+  // Generate dynamic text summarizing the voting mechanisms and the impact of attacks
   const generateDynamicText = () => {
     if (!votingResults) {
       return 'Currently displaying placeholder data. Once the actual voting results are available, they will be shown here.';
     }
 
-    const summaries = votingMechanisms.map((mechanism, index) => {
+    let text = '';
+    let normalResults = '';
+    let attackAnalysis = '';
+
+    const projectWinners: { [mechanism: string]: string } = {};
+
+    // First paragraph: mention which project won in each voting mechanism
+    votingMechanisms.forEach((mechanism) => {
       const data = votingResults?.[mechanism];
-      if (!data || Object.keys(data).length === 0) return `Mechanism ${index + 1}: No data available.`;
+      if (data && Object.keys(data).length > 0) {
+        const maxVotes = Math.max(...Object.values(data));
+        const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
+        projectWinners[mechanism] = `Project ${maxProject}`;
 
-      const totalVotes = Object.values(data).reduce((a, b) => a + b, 0);
-      const maxVotes = Math.max(...Object.values(data));
-      const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
-
-      return `Mechanism ${index + 1}: Total votes: ${totalVotes}, Highest votes received by Project ${maxProject} (${maxVotes} votes).`;
+        normalResults += `In the ${mechanism.replace(/([A-Z])/g, ' $1')} mechanism, Project ${maxProject} won with ${maxVotes} votes. `;
+      }
     });
 
-    return summaries.join(' ');
+    // Check for voter and project attacks to see if the winner changed
+    const quadraticVoterCollusion = projectWinners['quadraticVoterCollusionResults'];
+    const quadraticNoAttack = projectWinners['quadraticNoAttackResults'];
+    const quadraticProjectCollusion = projectWinners['quadraticProjectCollusionResults'];
+    const meanVoterAttack = projectWinners['meanVoterEpsilonResults'];
+    const meanNoAttack = projectWinners['meanNoAttackResults'];
+    const meanProjectAttack = projectWinners['meanProjectEpsilonResults'];
+
+    // Quadratic Voting - Voter Attack
+    if (quadraticVoterCollusion !== quadraticNoAttack) {
+      attackAnalysis += `Quadratic voting with voter collusion changed the winner from ${quadraticNoAttack} to ${quadraticVoterCollusion}. `;
+    } else {
+      attackAnalysis += `Quadratic voting with voter collusion did not change the outcome. `;
+    }
+
+    // Quadratic Voting - Project Attack
+    if (quadraticProjectCollusion !== quadraticNoAttack) {
+      attackAnalysis += `Quadratic voting with project collusion changed the winner from ${quadraticNoAttack} to ${quadraticProjectCollusion}. `;
+    } else {
+      attackAnalysis += `Quadratic voting with project collusion did not change the outcome. `;
+    }
+
+    // Mean Voting - Voter Attack
+    if (meanVoterAttack !== meanNoAttack) {
+      attackAnalysis += `Mean voting with voter collusion changed the winner from ${meanNoAttack} to ${meanVoterAttack}. `;
+    } else {
+      attackAnalysis += `Mean voting with voter collusion did not change the outcome. `;
+    }
+
+    // Mean Voting - Project Attack
+    if (meanProjectAttack !== meanNoAttack) {
+      attackAnalysis += `Mean voting with project collusion changed the winner from ${meanNoAttack} to ${meanProjectAttack}. `;
+    } else {
+      attackAnalysis += `Mean voting with project collusion did not change the outcome. `;
+    }
+
+    text = `${normalResults}\n${attackAnalysis}`;
+
+    return text;
   };
 
   return (
@@ -165,13 +241,6 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
 
       <div className="results-grid">
         {chartPairs}
-
-        <div className="result-box">
-          <Scatter data={scatterChartData1} />
-        </div>
-        <div className="result-box">
-          <Scatter data={scatterChartData2} />
-        </div>
       </div>
 
       <p className="dynamic-paragraph">
