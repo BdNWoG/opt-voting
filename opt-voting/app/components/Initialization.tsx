@@ -18,25 +18,25 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       alert("Please upload both voter and voting power files.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     const formData = new FormData();
     formData.append('voterFile', voterFile);
     formData.append('votingPowerFile', votingPowerFile);
-
+  
     try {
       const response = await fetch('/api/simulate', {
         method: 'POST',
         body: formData,
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to simulate');
       }
-
+  
       // Handle the Blob (CSV file download)
-      const blobResponse = await response.blob(); // This handles the file part of the response.
+      const blobResponse = await response.blob();
       const url = window.URL.createObjectURL(blobResponse);
       const a = document.createElement('a');
       a.href = url;
@@ -44,16 +44,17 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       document.body.appendChild(a);
       a.click();
       a.remove();
-
-      // Now handle the JSON result
+  
+      // Handle JSON result
       const jsonResponse = await response.clone().json(); // Clone response to handle JSON separately
-      console.log('Fetched JSON Response:', jsonResponse);
+      console.log('Fetched JSON Response:', jsonResponse); // Debugging log
+  
       setVotingResults(jsonResponse); // This will update the Results component
-
+  
     } catch (error) {
       console.error('Error in simulation:', error);
     }
-
+  
     setLoading(false);
   };
 
