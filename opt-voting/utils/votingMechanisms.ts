@@ -12,14 +12,24 @@ const normalizePreferences = (voter: VoterData): number => {
 };
 
 // 1. Max Voting
-export const maxVoting = (votersData: VoterData[]): VotingResults => {
-  const results: VotingResults = {};
-  votersData.forEach(voter => {
-    const maxIndex = voter.preferences.indexOf(Math.max(...voter.preferences));
-    results[maxIndex] = (results[maxIndex] || 0) + voter.votingPower;
-  });
-  return results;
-};
+export const maxVoting = (votersData: any[]) => {
+    const projectVotes: { [project: string]: number } = {};
+  
+    votersData.forEach((voter) => {
+      const maxPreference = Math.max(...voter.preferences);
+      const topProjects = voter.preferences
+        .map((pref: number, idx: number) => (pref === maxPreference ? idx : -1))
+        .filter((idx: number) => idx !== -1);
+  
+      const selectedProject = topProjects[0]; // You can add tie-breaking logic here
+      if (!projectVotes[selectedProject]) {
+        projectVotes[selectedProject] = 0;
+      }
+      projectVotes[selectedProject] += voter.votingPower;
+    });
+  
+    return projectVotes;
+  };
 
 // 2. Quadratic Voting - No Attack
 export const quadraticVotingNoAttack = (votersData: VoterData[]): VotingResults => {

@@ -31,11 +31,19 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         body: formData,
       });
 
-      const data = await response.json();
-      console.log('Simulation results:', data);
+      if (!response.ok) {
+        throw new Error('Failed to simulate');
+      }
 
-      // Pass the voting results to the parent component to update the charts
-      setVotingResults(data);
+      // Trigger download of the CSV file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'voting_results.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     } catch (error) {
       console.error('Error in simulation:', error);
     }

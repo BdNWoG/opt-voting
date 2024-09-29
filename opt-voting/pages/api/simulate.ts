@@ -66,6 +66,21 @@ const parseCSV = async (filePath: string): Promise<any[]> => {
   });
 };
 
+// Helper to convert results to CSV format
+const generateCSV = (data: any) => {
+  const headers = ['Mechanism', 'Project', 'Votes'];
+  let csv = `${headers.join(',')}\n`;
+
+  Object.keys(data).forEach((mechanism) => {
+    const mechanismResults = data[mechanism];
+    Object.keys(mechanismResults).forEach((project) => {
+      csv += `${mechanism},${project},${mechanismResults[project]}\n`;
+    });
+  });
+
+  return csv;
+};
+
 const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log('Simulation started');
   await runMiddleware(req, res, multerMiddleware);
@@ -105,9 +120,7 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const meanProjectEpsilonResults = meanVotingProjectEpsilonAttack(votersData);
     const trueVotingResults = trueVoting(votersData);
 
-    console.log('Sending JSON response with voting results');
-    // Return the results as JSON
-    res.status(200).json({
+    const votingResults = {
       maxVotingResults,
       quadraticNoAttackResults,
       meanNoAttackResults,
@@ -116,7 +129,18 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       meanVoterEpsilonResults,
       meanProjectEpsilonResults,
       trueVotingResults,
-    });
+    };
+
+    console.log('Generating CSV for voting results');
+    const csvContent = generateCSV(votingResults);
+
+    const resultFilePath = path.join(uploadDir, 'voting_results.csv');
+    fs.writeFileSync(resultFilePath, csvContent);
+
+    // Send the CSV file as response
+    res.setHeader('Content-Disposition', 'attachment; filename=voting_results.csv');
+    res.setHeader('Content-Type', 'text/csv');
+    fs.createReadStream(resultFilePath).pipe(res);
   } catch (error) {
     console.error('Error processing files:', error);
     res.status(500).json({ error: 'Error processing files' });
