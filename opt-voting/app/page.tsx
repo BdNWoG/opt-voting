@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import Initialization from './components/Initialization';
@@ -19,8 +19,10 @@ export default function Home() {
         </p>
       </section>
 
+      {/* Pass setVotingResults to Initialization to handle the simulation and results */}
       <Initialization setVotingResults={setVotingResults} />
 
+      {/* Pass the votingResults to the Results component to update the charts */}
       <Results votingResults={votingResults} />
 
       <Measurement />
@@ -29,7 +31,7 @@ export default function Home() {
         <h2 className="section-heading">Explanation</h2>
         <p className="section-paragraph">
           This will be many paragraphs of text that explains the working behind the Optimism Voting Strategy. 
-          It provides a detailed explanation the research and its potential basis, including proofs, images or more.
+          It provides a detailed explanation of the research and its potential basis, including proofs, images, and more.
         </p>
       </section>
     </div>

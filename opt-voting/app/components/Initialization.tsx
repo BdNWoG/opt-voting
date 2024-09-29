@@ -35,8 +35,12 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         throw new Error('Failed to simulate');
       }
 
-      // Trigger download of the CSV file
-      const blob = await response.blob();
+      // Extract JSON results for the charts
+      const jsonData = await response.json();
+      setVotingResults(jsonData);  // Update chart data
+
+      // Now, handle file download separately
+      const blob = new Blob([JSON.stringify(jsonData)], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
