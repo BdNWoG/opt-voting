@@ -110,15 +110,42 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
     });
 
+    // Log votersData after parsing
+    console.log('Parsed votersData:', JSON.stringify(votersData, null, 2));
+
     console.log('Executing voting mechanisms');
+    
+    // Max Voting Mechanism
     const maxVotingResults = maxVoting(votersData);
+    console.log('Max Voting Results:', maxVotingResults);
+    
+    // Quadratic Voting - No Attack
     const quadraticNoAttackResults = quadraticVotingNoAttack(votersData);
+    console.log('Quadratic Voting No Attack Results:', quadraticNoAttackResults);
+
+    // Mean Voting - No Attack
     const meanNoAttackResults = meanVotingNoAttack(votersData);
+    console.log('Mean Voting No Attack Results:', meanNoAttackResults);
+
+    // Quadratic Voting - Voter Collusion Attack
     const quadraticVoterCollusionResults = quadraticVotingVoterCollusionAttack(votersData);
+    console.log('Quadratic Voting Voter Collusion Attack Results:', quadraticVoterCollusionResults);
+
+    // Quadratic Voting - Project Collusion Attack
     const quadraticProjectCollusionResults = quadraticVotingProjectCollusionAttack(votersData);
+    console.log('Quadratic Voting Project Collusion Attack Results:', quadraticProjectCollusionResults);
+
+    // Mean Voting - Voter Epsilon Attack
     const meanVoterEpsilonResults = meanVotingVoterEpsilonAttack(votersData);
+    console.log('Mean Voting Voter Epsilon Attack Results:', meanVoterEpsilonResults);
+
+    // Mean Voting - Project Epsilon Attack
     const meanProjectEpsilonResults = meanVotingProjectEpsilonAttack(votersData);
+    console.log('Mean Voting Project Epsilon Attack Results:', meanProjectEpsilonResults);
+
+    // True Voting
     const trueVotingResults = trueVoting(votersData);
+    console.log('True Voting Results:', trueVotingResults);
 
     const votingResults = {
       maxVotingResults,

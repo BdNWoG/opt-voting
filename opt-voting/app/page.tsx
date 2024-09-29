@@ -19,10 +19,8 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Pass setVotingResults to Initialization to receive the results */}
       <Initialization setVotingResults={setVotingResults} />
 
-      {/* Pass votingResults to Results to update the charts */}
       <Results votingResults={votingResults} />
 
       <Measurement />

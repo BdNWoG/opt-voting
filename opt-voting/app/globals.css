@@ -60,70 +60,63 @@ p.section-paragraph {
 /* Input and Slider Boxes */
 .input-box, .slider-box {
   background-color: rgba(230, 57, 70, 0.1); /* Transparent shade of #e63946 */
-  padding: 15px;
+  padding: 15px; /* Adjust padding inside the box */
   border-radius: 5px;
-  flex: 3; /* Use equal flex values to balance width */
+  flex: 1;
   margin-right: 20px; /* Space between box and info */
+  width: 100%; /* Ensure it takes full width of parent */
 }
 
+/* Title Styling */
 .variable-title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px; /* Increase the gap between the title and slider */
 }
 
-/* Input Field Style */
-.input-field {
-  width: 95%; /* Reduced width to ensure it stays within the box */
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc; /* Add border to input field */
+/* Slider Input */
+input[type="range"] {
+  width: 100%; /* Full width for the slider */
+  -webkit-appearance: none; /* Removes default styling for WebKit browsers */
+  height: 8px;
+  background: #e63946; /* Red color */
   border-radius: 5px;
-  font-size: 16px;
+  outline: none; /* Removes the outline */
+  margin-top: 20px; /* Increase space between slider and number */
 }
 
-/* Style the dropdown menu to match the original input field */
-select.input-field {
-  background-color: white; /* Same background as the original input */
-  color: #333333; /* Text color */
-  border: 1px solid #ccc; /* Border similar to an input field */
-  padding: 10px; /* Same padding as input field */
-  width: 95%; /* Same width as the input field */
-  border-radius: 5px; /* Same rounded corners */
-  margin-top: 5px; /* Space similar to input field */
-  font-size: 16px; /* Font size to match input field */
-  font-family: 'Inter', sans-serif; /* Consistent font family */
-  appearance: none; /* Removes the default dropdown arrow styling */
+/* Slider thumb customization */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #555;
+  cursor: pointer;
 }
 
-/* Customize dropdown arrow for the select field */
-select.input-field::after {
-  content: "▼"; /* Custom dropdown arrow */
-  padding-left: 10px;
-  color: #555555;
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #555;
+  cursor: pointer;
 }
 
-/* Dropdown hover effect similar to the input field */
-select.input-field:hover {
-  border-color: #e63946; /* Border changes to red on hover */
-}
-
-/* Optional: Focus effect to highlight the dropdown when it's active */
-select.input-field:focus {
-  outline: none;
-  border-color: #e63946; /* Highlight border when the dropdown is focused */
-  box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Slight shadow for focus */
-}
-
-.instruction, .slider-value {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #555555;
-}
-
+/* Number display below slider */
 .slider-value {
   font-weight: bold;
   color: #e63946;
+  margin-top: 20px; /* Increase space between slider and number */
+  display: block;
+  text-align: left;
+}
+
+.instruction {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555555;
 }
 
 /* Right Side: Information Boxes */
