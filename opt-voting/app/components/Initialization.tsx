@@ -3,12 +3,51 @@
 import React, { useState } from 'react';
 
 const Initialization: React.FC = () => {
-  const [sliderValues, setSliderValues] = useState([50, 50, 50, 50, 50]);
+  const [voterFile, setVoterFile] = useState<File | null>(null);
+  const [votingPowerFile, setVotingPowerFile] = useState<File | null>(null);
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
-  const handleSliderChange = (index: number, value: number) => {
-    const newValues = [...sliderValues];
-    newValues[index] = value;
-    setSliderValues(newValues);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleSimulate = async () => {
+    if (!voterFile || !votingPowerFile) {
+      alert("Please upload both CSV files.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('voterFile', voterFile);
+    formData.append('votingPowerFile', votingPowerFile);
+
+    setIsSimulating(true);
+
+    try {
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'simulation-result.csv'; // You can modify the file name as needed
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        alert('Simulation failed. Please check your files and try again.');
+      }
+    } catch (error) {
+      console.error('Error during simulation:', error);
+    } finally {
+      setIsSimulating(false);
+    }
   };
 
   return (
@@ -21,41 +60,13 @@ const Initialization: React.FC = () => {
       <div className="initialization-container">
         <div className="box-pair">
           <div className="input-box">
-            <label className="variable-title">Voting Algorithm</label>
-            <select className="input-field">
-              <option value="">Select a voting algorithm</option>
-              <option value="option1">Max Voting</option>
-              <option value="option2">Quadratic Voting</option>
-              <option value="option3">Mean Voting</option>
-            </select>
-            <p className="instruction">Select an option from the dropdown menu</p>
-          </div>
-          <div className="info-box">
-            <h3>Voting Algorithms</h3>
-            <p>Different voting algorithms.</p>
-          </div>
-        </div>
-
-        <div className="box-pair">
-          <div className="input-box">
-            <label className="variable-title">Attack Enabled?</label>
-            <select className="input-field">
-              <option value="">Select an attack option</option>
-              <option value="option1">Attack Enabled</option>
-              <option value="option2">Attack Disabled</option>
-            </select>
-            <p className="instruction">Select an option from the dropdown menu</p>
-          </div>
-          <div className="info-box">
-            <h3>Attack Enabled?</h3>
-            <p>Brief explanation.</p>
-          </div>
-        </div>
-
-        <div className="box-pair">
-          <div className="input-box">
             <label className="variable-title">Voter Preference</label>
-            <input type="file" className="input-field" accept=".csv" />
+            <input 
+              type="file" 
+              className="input-field" 
+              accept=".csv" 
+              onChange={(e) => handleFileChange(e, setVoterFile)} 
+            />
             <p className="instruction">Please upload a CSV file containing voting preference data.</p>
           </div>
           <div className="info-box">
@@ -67,7 +78,12 @@ const Initialization: React.FC = () => {
         <div className="box-pair">
           <div className="input-box">
             <label className="variable-title">Voting Power</label>
-            <input type="file" className="input-field" accept=".csv" />
+            <input 
+              type="file" 
+              className="input-field" 
+              accept=".csv" 
+              onChange={(e) => handleFileChange(e, setVotingPowerFile)} 
+            />
             <p className="instruction">Please upload a CSV file containing voting power data.</p>
           </div>
           <div className="info-box">
@@ -78,7 +94,13 @@ const Initialization: React.FC = () => {
 
         {/* Simulate Button */}
         <div className="simulate-button-container">
-          <button className="simulate-button">Simulate!</button>
+          <button 
+            className="simulate-button" 
+            onClick={handleSimulate}
+            disabled={isSimulating}
+          >
+            {isSimulating ? 'Simulating...' : 'Simulate!'}
+          </button>
         </div>
       </div>
     </section>
