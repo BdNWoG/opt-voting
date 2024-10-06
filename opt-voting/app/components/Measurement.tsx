@@ -75,6 +75,7 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
       max: 8,
       explanation: 'This represents the number of distinct project winners across the 8 voting mechanisms. It shows how varied the winning projects are across different voting systems.'
     },
+    // Quadratic Voting Section
     { 
       label: 'Difference between Quadratic Voting and Voter Attack', 
       value: quadraticVoterAttackDifference, 
@@ -87,6 +88,7 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
       max: 100,
       explanation: 'This percentage reflects the impact of project collusion in quadratic voting. It compares the changes in vote totals caused by project-level manipulation.'
     },
+    // Mean Voting Section
     { 
       label: 'Difference between Mean Voting and Voter Attack', 
       value: meanVoterAttackDifference, 

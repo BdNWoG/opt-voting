@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Initialization from './components/Initialization';
 import Results from './components/Results';
 import Measurement from './components/Measurement';
+import LiteratureReview from './components/LiteratureReview';
 
 export default function Home() {
   // Manage the voting results state here
@@ -12,11 +13,8 @@ export default function Home() {
   return (
     <div>
       <section id="description" style={{ padding: '50px 20px 0px' }}>
-        <h2 className="section-heading">Description</h2>
-        <p className="section-paragraph">
-          This is a brief paragraph of text that describes the purpose of the Optimism Voting Strategy. 
-          It provides an overview of the research and its potential implications in blockchain technology.
-        </p>
+        {/* Insert the Literature Review component here */}
+        <LiteratureReview />
       </section>
 
       {/* Pass setVotingResults to Initialization to handle the simulation and results */}

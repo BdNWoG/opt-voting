@@ -51,10 +51,12 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
 
   const votingMechanisms = [
     'maxVotingResults',
+    // Quadratic Voting Group
     'quadraticNoAttackResults',
-    'meanNoAttackResults',
     'quadraticVoterCollusionResults',
     'quadraticProjectCollusionResults',
+    // Mean Voting Group
+    'meanNoAttackResults',
     'meanVoterEpsilonResults',
     'meanProjectEpsilonResults',
     'trueVotingResults'
@@ -150,10 +152,10 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     const hasData = Object.keys(data).length > 0;
 
     const barChartData = hasData ? generateChartData(data) : placeholderData;
-    const barChartOptions = generateChartOptions(`${mechanism} - Bar Chart`);
+    const barChartOptions = generateChartOptions(`${mechanism}`);
 
     const pieChartData = hasData ? generateChartData(data) : placeholderData;
-    const pieChartOptions = generatePieChartOptions(`${mechanism} - Pie Chart`);
+    const pieChartOptions = generatePieChartOptions(`${mechanism}`);
 
     return (
       <React.Fragment key={mechanism}>
