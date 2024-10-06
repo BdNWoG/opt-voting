@@ -35,7 +35,8 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
   const [votingPowerFile, setVotingPowerFile] = useState<File | null>(null);
   const [voterSource, setVoterSource] = useState('upload'); // For voters
   const [votingPowerSource, setVotingPowerSource] = useState('upload'); // For voting power
-  const [distributionType, setDistributionType] = useState<'uniform' | 'gaussian'>('uniform');
+  const [voterDistribution, setVoterDistribution] = useState<'uniform' | 'gaussian'>('uniform');
+  const [powerDistribution, setPowerDistribution] = useState<'uniform' | 'gaussian'>('uniform');
   const [loading, setLoading] = useState(false);
 
   // Function to handle file uploads
@@ -47,74 +48,92 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
 
   // Function to simulate or generate data
   const handleSimulate = async () => {
-    if (voterSource === 'upload' && (!voterFile || !votingPowerFile)) {
-      alert("Please upload both voter and voting power files.");
+    setLoading(true);
+
+    let voterData = '';
+    let votingPowerData = '';
+
+    if (voterSource === 'generate') {
+      const randomVoterData = generateRandomData(100, 5, voterDistribution); // Generating 100 voters with 5 projects
+      voterData = convertToCSV(randomVoterData);
+    }
+
+    if (votingPowerSource === 'generate') {
+      const randomVotingPowerData = generateRandomData(100, 1, powerDistribution); // 100 voters with 1 power
+      votingPowerData = convertToCSV(randomVotingPowerData);
+    }
+
+    if (voterSource === 'upload' && !voterFile) {
+      alert('Please upload the voter preferences file.');
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
+    if (votingPowerSource === 'upload' && !votingPowerFile) {
+      alert('Please upload the voting power file.');
+      setLoading(false);
+      return;
+    }
 
-    if (voterSource === 'generate' || votingPowerSource === 'generate') {
-      // Generate random data based on user choice (Uniform or Gaussian)
-      const randomVoterData = generateRandomData(100, 5, distributionType); // Generating 100 voters with 5 projects
-      const randomVotingPowerData = generateRandomData(100, 1, distributionType); // 100 voters with 1 power
+    const formData = new FormData();
 
-      const voterCSV = convertToCSV(randomVoterData);
-      const votingPowerCSV = convertToCSV(randomVotingPowerData);
+    if (voterSource === 'upload') {
+      formData.append('voterFile', voterFile!);
+    } else {
+      const blob = new Blob([voterData], { type: 'text/csv' });
+      formData.append('voterFile', blob, 'voter_preferences.csv');
+    }
 
-      console.log("Generated Random Voter Data (CSV):", voterCSV);
-      console.log("Generated Random Voting Power Data (CSV):", votingPowerCSV);
+    if (votingPowerSource === 'upload') {
+      formData.append('votingPowerFile', votingPowerFile!);
+    } else {
+      const blob = new Blob([votingPowerData], { type: 'text/csv' });
+      formData.append('votingPowerFile', blob, 'voting_power.csv');
+    }
 
-      // Parse the random CSV data
-      Papa.parse(voterCSV, {
-        header: false,
+    try {
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to simulate');
+      }
+
+      const blobResponse = await response.blob();
+      const csvText = await blobResponse.text(); // Convert blob to text
+
+      // Parse the CSV to update the voting results state
+      Papa.parse(csvText, {
+        header: true,
         complete: (results) => {
-          console.log('Parsed Random Voter Data:', results.data);
-          setVotingResults({
-            voters: results.data,
-            votingPower: randomVotingPowerData, // Use the generated voting power as well
+          const parsedResults: any = {};
+          results.data.forEach((row: any) => {
+            const mechanism = row.Mechanism;
+            const project = row.Project;
+            const votes = parseFloat(row.Votes);
+            if (!parsedResults[mechanism]) {
+              parsedResults[mechanism] = {};
+            }
+            parsedResults[mechanism][project] = votes;
           });
+          setVotingResults(parsedResults);
         },
       });
 
-    } else if (voterSource === 'upload' && votingPowerSource === 'upload') {
-      const formData = new FormData();
-      formData.append('voterFile', voterFile!);
-      formData.append('votingPowerFile', votingPowerFile!);
-
-      try {
-        const response = await fetch('/api/simulate', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to simulate');
-        }
-
-        const blobResponse = await response.blob();
-        const csvText = await blobResponse.text(); // Convert blob to text
-
-        Papa.parse(csvText, {
-          header: true,
-          complete: (results) => {
-            const parsedResults: any = {};
-            results.data.forEach((row: any) => {
-              const mechanism = row.Mechanism;
-              const project = row.Project;
-              const votes = parseFloat(row.Votes);
-              if (!parsedResults[mechanism]) {
-                parsedResults[mechanism] = {};
-              }
-              parsedResults[mechanism][project] = votes;
-            });
-            setVotingResults(parsedResults);
-          },
-        });
-      } catch (error) {
-        console.error('Error in simulation:', error);
-      }
+      // Automatically trigger the download of the CSV file
+      const url = window.URL.createObjectURL(blobResponse);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'voting_results.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error('Error in simulation:', error);
     }
+
     setLoading(false);
   };
 
@@ -141,7 +160,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
             </>
           ) : (
             <>
-              <select value={distributionType} onChange={(e) => setDistributionType(e.target.value as 'uniform' | 'gaussian')}>
+              <select value={voterDistribution} onChange={(e) => setVoterDistribution(e.target.value as 'uniform' | 'gaussian')}>
                 <option value="uniform">Uniform Distribution</option>
                 <option value="gaussian">Gaussian Distribution</option>
               </select>
@@ -167,7 +186,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
             </>
           ) : (
             <>
-              <select value={distributionType} onChange={(e) => setDistributionType(e.target.value as 'uniform' | 'gaussian')}>
+              <select value={powerDistribution} onChange={(e) => setPowerDistribution(e.target.value as 'uniform' | 'gaussian')}>
                 <option value="uniform">Uniform Distribution</option>
                 <option value="gaussian">Gaussian Distribution</option>
               </select>
