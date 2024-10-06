@@ -74,34 +74,66 @@ p.section-paragraph {
   margin-bottom: 20px; /* Increase the gap between the title and slider */
 }
 
-/* Slider Input */
-input[type="range"] {
-  width: 100%; /* Full width for the slider */
-  -webkit-appearance: none; /* Removes default styling for WebKit browsers */
-  height: 8px;
-  background: #e63946; /* Red color */
-  border-radius: 5px;
-  outline: none; /* Removes the outline */
-  margin-top: 20px; /* Increase space between slider and number */
+/* Dropdown Styling */
+select {
+  background-color: white; /* White background */
+  color: #333333; /* Dark text */
+  font-size: 16px; /* Match font size with inputs */
+  padding: 10px; /* Padding inside the dropdown */
+  border: 1px solid #ccc; /* Soft border */
+  border-radius: 5px; /* Rounded corners */
+  width: 95%; /* Full width */
+  font-family: 'Inter', sans-serif; /* Ensure consistent font */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  appearance: none; /* Remove default arrow appearance */
+  margin-top: 15px; /* Adds 20px space above */
+  margin-bottom: 15px; /* Adds 20px space below */
 }
 
-/* Slider thumb customization */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #555;
-  cursor: pointer;
+select:focus {
+  border-color: #e63946; /* Red border on focus */
+  box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Shadow effect on focus */
+  outline: none; /* Remove default outline */
 }
 
-input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #555;
-  cursor: pointer;
+select:hover {
+  border-color: #e63946; /* Red border on hover */
+}
+
+/* Add custom arrow for dropdown */
+select {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="gray"><polygon points="0,0 20,0 10,10"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+}
+
+/* Input Field Styling (Text & Number) */
+input[type="number"],
+input[type="text"] {
+  background-color: white; /* White background */
+  color: #333333; /* Dark text */
+  font-size: 16px; /* Match font size */
+  padding: 10px; /* Padding inside the input */
+  border: 1px solid #ccc; /* Soft border */
+  border-radius: 5px; /* Rounded corners */
+  width: 95%; /* Full width */
+  font-family: 'Inter', sans-serif; /* Ensure consistent font */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-top: 15px; /* Adds 20px space above */
+  margin-bottom: 15px; /* Adds 20px space below */
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+  border-color: #e63946; /* Red border on focus */
+  box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Shadow effect on focus */
+  outline: none; /* Remove default outline */
+}
+
+input[type="number"]:hover,
+input[type="text"]:hover {
+  border-color: #e63946; /* Red border on hover */
 }
 
 /* Number display below slider */
@@ -144,7 +176,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   justify-content: center;
   margin-top: 30px;
-  width: 80%; /* Align the button with the box-pair width */
+  width: 100%; /* Align the button with the box-pair width */
 }
 
 .simulate-button {
@@ -223,3 +255,4 @@ input[type="file"].input-field:focus {
   border-color: #e63946; /* Highlight border when focused */
   box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Shadow effect on focus */
 }
+

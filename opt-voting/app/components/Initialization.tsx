@@ -3,31 +3,37 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';  // Import PapaParse for CSV parsing
 
-// Helper function to generate random data
+// Helper function to generate random data with Voter ID
 const generateRandomData = (rows: number, cols: number, distribution: 'uniform' | 'gaussian') => {
   const data = [];
   for (let i = 0; i < rows; i++) {
-    const row = [];
+    const row = [`Voter ${i + 1}`]; // Adding only Voter ID as the first column
     for (let j = 0; j < cols; j++) {
+      let value = ''; // Initialize 'value' as an empty string
+
       if (distribution === 'uniform') {
-        row.push(Math.random().toFixed(2)); // Generate uniform random number
+        value = Math.random().toFixed(2); // Generate uniform random number
       } else if (distribution === 'gaussian') {
         // Generate Gaussian random number using Box-Muller transform
-        let u1 = Math.random();
-        let u2 = Math.random();
-        let randGaussian = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
-        randGaussian = Math.max(0, Math.min(1, randGaussian)); // Clamping between 0 and 1
-        row.push(randGaussian.toFixed(2));
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const randGaussian = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+        value = Math.max(0, Math.min(1, randGaussian)).toFixed(2); // Clamping between 0 and 1
       }
+
+      row.push(value); // Now 'value' is always initialized before it's pushed
     }
     data.push(row);
   }
   return data;
 };
 
-// Function to convert random data into CSV string format
-const convertToCSV = (data: any[]) => {
-  return Papa.unparse(data);
+// Function to convert random data into CSV string format with headers
+const convertToCSV = (data: any[], headers: string[]) => {
+  return Papa.unparse({
+    fields: headers,
+    data: data
+  });
 };
 
 const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ setVotingResults }) => {
@@ -37,6 +43,8 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
   const [votingPowerSource, setVotingPowerSource] = useState('upload'); // For voting power
   const [voterDistribution, setVoterDistribution] = useState<'uniform' | 'gaussian'>('uniform');
   const [powerDistribution, setPowerDistribution] = useState<'uniform' | 'gaussian'>('uniform');
+  const [numProjects, setNumProjects] = useState(5); // Default number of projects
+  const [numVoters, setNumVoters] = useState(100); // Default number of voters
   const [loading, setLoading] = useState(false);
 
   // Function to handle file uploads
@@ -53,14 +61,19 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
     let voterData = '';
     let votingPowerData = '';
 
+    const voterHeaders = ['Voter ID', ...Array.from({ length: numProjects }, (_, i) => `Project ${i + 1}`)];
+    const votingPowerHeaders = ['Voter ID', 'Voting Power'];
+
     if (voterSource === 'generate') {
-      const randomVoterData = generateRandomData(100, 5, voterDistribution); // Generating 100 voters with 5 projects
-      voterData = convertToCSV(randomVoterData);
+      const randomVoterData = generateRandomData(numVoters, numProjects, voterDistribution); // Generating selected number of voters with selected number of projects
+      voterData = convertToCSV(randomVoterData, voterHeaders);
+      console.log("Generated Voter Preferences CSV:\n", voterData); // Log the generated voter data
     }
 
     if (votingPowerSource === 'generate') {
-      const randomVotingPowerData = generateRandomData(100, 1, powerDistribution); // 100 voters with 1 power
-      votingPowerData = convertToCSV(randomVotingPowerData);
+      const randomVotingPowerData = generateRandomData(numVoters, 1, powerDistribution); // Generating selected number of voters with 1 voting power column
+      votingPowerData = convertToCSV(randomVotingPowerData, votingPowerHeaders);
+      console.log("Generated Voting Power CSV:\n", votingPowerData); // Log the generated voting power data
     }
 
     if (voterSource === 'upload' && !voterFile) {
@@ -113,6 +126,12 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
             const mechanism = row.Mechanism;
             const project = row.Project;
             const votes = parseFloat(row.Votes);
+
+            // Ensure the parsed number is valid, otherwise, log an error for debugging
+            if (isNaN(votes)) {
+              console.error("Invalid vote value detected:", row);
+            }
+
             if (!parsedResults[mechanism]) {
               parsedResults[mechanism] = {};
             }
@@ -165,6 +184,24 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
                 <option value="gaussian">Gaussian Distribution</option>
               </select>
               <p className="instruction">Random data will be generated using the selected distribution.</p>
+
+              <label htmlFor="numProjects" className="variable-title">Number of Projects</label>
+              <input
+                type="number"
+                className="input-field"
+                id="numProjects"
+                value={numProjects}
+                onChange={(e) => setNumProjects(parseInt(e.target.value))}
+              />
+
+              <label htmlFor="numVoters" className="variable-title">Number of Voters</label>
+              <input
+                type="number"
+                className="input-field"
+                id="numVoters"
+                value={numVoters}
+                onChange={(e) => setNumVoters(parseInt(e.target.value))}
+              />
             </>
           )}
         </div>
@@ -174,7 +211,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       <div className="box-pair">
         <div className="input-box">
           <label className="variable-title">Voting Power</label>
-          <select value={votingPowerSource} onChange={(e) => setVotingPowerSource(e.target.value)}>
+          <select value={votingPowerSource}             onChange={(e) => setVotingPowerSource(e.target.value)}>
             <option value="upload">Upload CSV</option>
             <option value="generate">Generate Random Data</option>
           </select>
@@ -190,7 +227,8 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
                 <option value="uniform">Uniform Distribution</option>
                 <option value="gaussian">Gaussian Distribution</option>
               </select>
-              <p className="instruction">Random data will be generated using the selected distribution.</p>
+              <p className="instruction">Random data will be generated using the selected distribution for the selected number of voters.</p>
+              {/* The number of voters is selected in the voter preferences */}
             </>
           )}
         </div>
@@ -203,7 +241,8 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         </button>
       </div>
     </section>
-  );
+  ); 
 };
 
 export default Initialization;
+
