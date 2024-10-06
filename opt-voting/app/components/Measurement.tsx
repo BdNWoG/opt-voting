@@ -53,19 +53,35 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
 
   const calculatePercentageDifference = (noAttackData: { [project: string]: number }, attackData: { [project: string]: number }): number => {
     if (!noAttackData || !attackData) return 0;
-
-    let totalDifference = 0;
-    let totalVotes = 0;
-
+  
+    let totalSquaredDifference = 0;
+    let totalSquaredOriginal = 0;
+  
     Object.keys(noAttackData).forEach((project) => {
       const noAttackVotes = noAttackData[project] || 0;
       const attackVotes = attackData[project] || 0;
-      totalDifference += Math.abs(noAttackVotes - attackVotes);
-      totalVotes += noAttackVotes;
+  
+      if (noAttackVotes === 0) {
+        // If there are no votes in the no-attack scenario, skip this project
+        return;
+      }
+  
+      // Convert raw vote counts to percentages
+      const noAttackPercentage = noAttackVotes / Object.values(noAttackData).reduce((a, b) => a + b, 0) * 100;
+      const attackPercentage = attackVotes / Object.values(attackData).reduce((a, b) => a + b, 0) * 100;
+  
+      // Square the difference in percentage and sum it
+      const percentageDifference = Math.abs(noAttackPercentage - attackPercentage);
+      totalSquaredDifference += Math.pow(percentageDifference, 2);
+  
+      // Sum of the squared original vote percentages
+      totalSquaredOriginal += Math.pow(noAttackPercentage, 2);
     });
-
-    if (totalVotes === 0) return 0; // Avoid division by zero
-    return (totalDifference / totalVotes) * 100;
+  
+    if (totalSquaredOriginal === 0) return 0; // Avoid division by zero
+  
+    // Final result: (Sum of squared differences) / (Sum of squared original percentages)
+    return totalSquaredDifference / totalSquaredOriginal * 100;
   };
 
   const measurementValues = [
