@@ -256,3 +256,29 @@ input[type="file"].input-field:focus {
   box-shadow: 0 0 5px rgba(230, 57, 70, 0.5); /* Shadow effect on focus */
 }
 
+/* Style for the Show More/Show Less button */
+.show-more-button {
+  background-color: #e63946; /* Red color to match your theme */
+  color: white; /* White text */
+  padding: 10px 20px; /* Padding around the button */
+  font-size: 16px; /* Slightly larger font for better readability */
+  font-weight: bold; /* Bold text */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Slightly rounded corners */
+  cursor: pointer; /* Show pointer on hover */
+  margin-top: 20px; /* Space between button and content */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Button hover effect */
+.show-more-button:hover {
+  background-color: #cc2b3a; /* Darker red on hover */
+}
+
+/* Optional for mobile responsiveness */
+@media (max-width: 600px) {
+  .show-more-button {
+    width: 100%; /* Full-width button on smaller screens */
+    font-size: 14px; /* Slightly smaller font */
+  }
+}
