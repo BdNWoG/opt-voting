@@ -163,6 +163,12 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         This section provides the initial setup for the Optimism Voting Strategy. Below, you can upload CSV files or generate random data for voter preferences and voting power.
       </p>
 
+      {/* Links to download voter preferences and voting power CSV templates */}
+      <div className="download-links">
+        <a href="/uploads/voter_preferences.csv" download>Download Voter Preferences CSV</a> | 
+        <a href="/uploads/voting_power.csv" download>Download Voting Power CSV</a>
+      </div>
+
       {/* Voter Preferences */}
       <div className="box-pair">
         <div className="input-box">
@@ -194,7 +200,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
                 onChange={(e) => setNumProjects(parseInt(e.target.value))}
               />
 
-              <label htmlFor="numVoters" className="variable-title">Number of Voters</label>
+<label htmlFor="numVoters" className="variable-title">Number of Voters</label>
               <input
                 type="number"
                 className="input-field"
@@ -211,7 +217,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
       <div className="box-pair">
         <div className="input-box">
           <label className="variable-title">Voting Power</label>
-          <select value={votingPowerSource}             onChange={(e) => setVotingPowerSource(e.target.value)}>
+          <select value={votingPowerSource} onChange={(e) => setVotingPowerSource(e.target.value)}>
             <option value="upload">Upload CSV</option>
             <option value="generate">Generate Random Data</option>
           </select>
@@ -241,7 +247,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
         </button>
       </div>
     </section>
-  ); 
+  );
 };
 
 export default Initialization;
