@@ -1,13 +1,11 @@
-# Optimism RFP: Evaluating Voting Designs for Retroactive Public Goods Funding
+# Optimism RFP: Evaluating Voting Designs for RPGF
+
+A simulation framework for analyzing different voting mechanisms and their vulnerability to various attack vectors in the context of Optimism's Retroactive Public Goods Funding (RPGF).
 
 RFP Information: https://github.com/orgs/ethereum-optimism/projects/31/views/1?pane=issue&itemId=61734498
-Vercel Deployment: https://optimism-rfp-simulation.vercel.app/
+Vercel Deployment: https://opt-voting.vercel.app/
 
 Maintainers: Billy Gao and Jay Yu
-
-# Optimism RFP Voting Simulation
-
-A simulation framework for analyzing different voting mechanisms and their vulnerability to various attack vectors in the context of Optimism's Retroactive Public Goods Funding (RFP).
 
 ## Overview
 
@@ -28,22 +26,11 @@ This project implements a voting simulation system that models different voting 
 
 App uses Next.js and Tailwind CSS.
 
-### Clone the repository
 ```bash
 git clone https://github.com/yourusername/optimism-rfp-simulation
-cd optimism-rfp-simulation
-```
-
-### Install dependencies
-```bash
-npm install
-```
-
-### Start development server
-```bash
+cd opt-voting
 npm run dev
 ```
-
 
 ## Voting Algorithms
 
