@@ -1,7 +1,7 @@
 .footer {
     width: calc(100% + 80px); /* Increase width to counteract negative margin */
     padding: 20px 0; /* Vertical padding only */
-    background-color: rgba(230, 57, 70, 0.6); /* More orangey color with lower transparency */
+    background-color: rgb(185, 44, 56, 0.9); /* More orangey color with lower transparency */
     color: #ffffff; /* White text color */
     text-align: center;
     position: relative;
@@ -77,5 +77,12 @@
   .footerIcons img {
     width: 24px; /* Adjust icon size */
     height: 24px;
+    border-radius: 50%;  /* Makes the container circular */
+    border: 1px solid white;  /* Adds white border */
+    background-color: white;  /* Adds white background */
+    padding: 5px;  /* Adds some padding around the logo */
+    object-fit: contain;  /* Ensures the logo fits nicely */
   }
-  
+  .footerSection a {
+    color: white;
+  }

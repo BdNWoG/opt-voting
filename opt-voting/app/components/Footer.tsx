@@ -6,16 +6,14 @@ const Footer: React.FC = () => {
     <footer className={styles.footer}>
       <div className={styles.footerContainer}>
         <div className={styles.footerSection}>
-          <h4>Further Info</h4>
-          <ul>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#support">Support</a></li>
-          </ul>
+          <h4>Maintained By</h4>
+          <a href="https://blockchain.stanford.edu/" target="_blank" rel="noopener noreferrer">
+            Stanford Blockchain Club
+          </a>
         </div>
         <div className={styles.footerSection}>
-          <h4>Credits</h4>
-          <p>© 2024 Optimism Voting Strategy. All rights reserved.</p>
+          <h4>Acknowledgements</h4>
+          <p>Research work supported by Optimism Foundation.</p>
         </div>
         <div className={styles.footerSection}>
           <h4>Contact Us</h4>

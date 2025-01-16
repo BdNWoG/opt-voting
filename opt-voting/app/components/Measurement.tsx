@@ -123,31 +123,64 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
     <section id="measurement" className="measurement-section" style={{ padding: '20px 20px' }}>
       <h2 className="section-heading">Measurement</h2>
       <p className="section-paragraph">
-        This section provides a detailed overview of the key measurements involved in the Optimism Voting Strategy. Each measurement is represented by a value that reflects its current state.
+        This section provides a detailed overview of the key measurements involved in the Optimism Voting Strategy.
       </p>
 
-      <div className="measurement-container">
-        {measurementValues.map((measurement, index) => (
-          <div className="box-pair" key={index}>
-            <div className="slider-box">
-              <label className="variable-title">{measurement.label}</label>
-              <input
-                type="range"
-                className="slider"
-                min="0"
-                max={measurement.max}
-                value={measurement.value}
-                readOnly /* Make the slider fixed */
-              />
-              <p className="slider-value">{measurement.value.toFixed(2)}</p>
-            </div>
-            <div className="info-box">
-              <h3>{measurement.label}</h3>
-              <p>{measurement.explanation}</p>
-            </div>
-          </div>
-        ))}
+      <div className="table-container">
+        <table className="measurement-table">
+          <thead>
+            <tr>
+              <th>Measurement</th>
+              <th>Value</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {measurementValues.map((measurement, index) => (
+              <tr key={index}>
+                <td>{measurement.label}</td>
+                <td className="value-cell">{measurement.value.toFixed(2)}</td>
+                <td>{measurement.explanation}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      <style jsx>{`
+        .table-container {
+          overflow-x: auto;
+          margin: 20px 0;
+        }
+        
+        .measurement-table {
+          width: 100%;
+          border-collapse: collapse;
+          background-color: white;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .measurement-table th,
+        .measurement-table td {
+          padding: 12px 16px;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
+        
+        .measurement-table th {
+          background-color: #f5f5f5;
+          font-weight: 600;
+        }
+        
+        .value-cell {
+          font-family: monospace;
+          font-weight: 500;
+        }
+        
+        .measurement-table tr:hover {
+          background-color: #f8f8f8;
+        }
+      `}</style>
     </section>
   );
 };
