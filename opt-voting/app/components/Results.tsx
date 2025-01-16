@@ -62,6 +62,7 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
   };
 
   const votingMechanisms = [
+    'trueVotingResults',
     'maxVotingResults',
     // Quadratic Voting Group
     'quadraticNoAttackResults',
@@ -71,8 +72,31 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     'meanNoAttackResults',
     'meanVoterEpsilonResults',
     'meanProjectEpsilonResults',
-    'trueVotingResults'
   ];
+
+  // Add mapping for friendly names
+  const mechanismNames: { [key: string]: string } = {
+    maxVotingResults: 'Maximum Voting',
+    quadraticNoAttackResults: 'Quadratic Voting (Base Case)',
+    quadraticVoterCollusionResults: 'Quadratic Voting with Voter Collusion',
+    quadraticProjectCollusionResults: 'Quadratic Voting with Project Collusion',
+    meanNoAttackResults: 'Mean Voting (Base Case)',
+    meanVoterEpsilonResults: 'Mean Voting with Voter Manipulation',
+    meanProjectEpsilonResults: 'Mean Voting with Project Manipulation',
+    trueVotingResults: 'Baseline Voting Distribution'
+  };
+
+  // Add descriptions for each mechanism
+  const mechanismDescriptions: { [key: string]: string } = {
+    maxVotingResults: 'Single Selection Voting where each voter can only allocate their maximum votes to one project.',
+    quadraticNoAttackResults: 'Quadratic voting mechanism in its pure form, where the cost of votes increases quadratically. This helps prevent extreme allocations.',
+    quadraticVoterCollusionResults: 'Quadratic voting with voter collusion, where voters coordinate their voting strategy to maximize influence in a quadratic voting system.',
+    quadraticProjectCollusionResults: 'Shows how quadratic voting results change when projects collaborate to manipulate vote distribution.',
+    meanNoAttackResults: 'Mean voting system in its basic form, where votes are averaged to reduce the impact of extreme allocations.',
+    meanVoterEpsilonResults: 'Illustrates the effect of strategic voting in a mean voting system when voters attempt to manipulate outcomes.',
+    meanProjectEpsilonResults: 'Shows the impact of project coordination on mean voting results when projects try to game the system.',
+    trueVotingResults: 'Distribution of votes according to data from voters\' preference matrix, without any manipulation, serving as a baseline for comparison.'
+  };
 
   const generateChartData = (data: { [project: string]: number }) => {
     const labels = Object.keys(data).map((project) => `Project ${project}`);
@@ -101,16 +125,16 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
   };
 
   // Bar chart options without a legend
-  const generateChartOptions = (chartTitle: string) => ({
+  const generateChartOptions = (mechanism: string) => ({
     plugins: {
       title: {
         display: true,
-        text: chartTitle,
+        text: `${votingMechanisms.indexOf(mechanism) + 1}. ${mechanismNames[mechanism]}`,
         font: {
           size: 20,
         },
         padding: {
-          top: 10,
+          top: 0,
           bottom: 10
         }
       },
@@ -150,21 +174,25 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
         left: 5,
         right: 5,
         top: 5,
-        bottom: 20
+        bottom: 0
       }
     },
     maintainAspectRatio: true,
   });
 
   // Pie chart options without axis and axis titles
-  const generatePieChartOptions = (chartTitle: string) => ({
+  const generatePieChartOptions = (mechanism: string) => ({
     plugins: {
       title: {
         display: true,
-        text: chartTitle,
+        text: `${votingMechanisms.indexOf(mechanism) + 1}. ${mechanismNames[mechanism]}`,
         font: {
           size: 20,
         },
+        padding: {
+          top: 5,
+          bottom: 20
+        }
       },
       legend: {
         display: true,
@@ -175,6 +203,14 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
           padding: 10,
         },
       },
+    },
+    layout: {
+      padding: {
+        left: 5,
+        right: 5,
+        top: 5,
+        bottom: 0
+      }
     },
   });
 
@@ -199,70 +235,91 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
       return 'Currently displaying placeholder data. Once the actual voting results are available, they will be shown here.';
     }
 
-    let text = '';
-    let normalResults = '';
-    let attackAnalysis = '';
+    const rows: { index: number; mechanism: string; winner: string; votes: number }[] = [];
 
-    const projectWinners: { [mechanism: string]: string } = {};
-
-    // First paragraph: mention which project won in each voting mechanism
-    votingMechanisms.forEach((mechanism) => {
+    // Generate table rows with index
+    votingMechanisms.forEach((mechanism, index) => {
       const data = votingResults?.[mechanism];
       if (data && Object.keys(data).length > 0) {
         const maxVotes = Math.max(...Object.values(data));
         const maxProject = Object.keys(data)[Object.values(data).indexOf(maxVotes)];
-        projectWinners[mechanism] = `Project ${maxProject}`;
-
-        normalResults += `In the ${mechanism.replace(/([A-Z])/g, ' $1')} mechanism, Project ${maxProject} won with ${maxVotes} votes. `;
+        
+        rows.push({
+          index: index + 1,
+          mechanism: mechanismNames[mechanism],
+          winner: `Project ${maxProject}`,
+          votes: maxVotes
+        });
       }
     });
 
-    // Check for voter and project attacks to see if the winner changed
-    const quadraticVoterCollusion = projectWinners['quadraticVoterCollusionResults'];
-    const quadraticNoAttack = projectWinners['quadraticNoAttackResults'];
-    const quadraticProjectCollusion = projectWinners['quadraticProjectCollusionResults'];
-    const meanVoterAttack = projectWinners['meanVoterEpsilonResults'];
-    const meanNoAttack = projectWinners['meanNoAttackResults'];
-    const meanProjectAttack = projectWinners['meanProjectEpsilonResults'];
+    return (
+      <div className="table-container">
+        <table className="results-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Mechanism</th>
+              <th>Winner</th>
+              <th>Votes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.index}>
+                <td>{row.index}</td>
+                <td>{row.mechanism}</td>
+                <td>{row.winner}</td>
+                <td className="value-cell">{row.votes.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-    // Quadratic Voting - Voter Attack
-    if (quadraticVoterCollusion !== quadraticNoAttack) {
-      attackAnalysis += `Quadratic voting with voter collusion changed the winner from ${quadraticNoAttack} to ${quadraticVoterCollusion}. `;
-    } else {
-      attackAnalysis += `Quadratic voting with voter collusion did not change the outcome. `;
-    }
-
-    // Quadratic Voting - Project Attack
-    if (quadraticProjectCollusion !== quadraticNoAttack) {
-      attackAnalysis += `Quadratic voting with project collusion changed the winner from ${quadraticNoAttack} to ${quadraticProjectCollusion}. `;
-    } else {
-      attackAnalysis += `Quadratic voting with project collusion did not change the outcome. `;
-    }
-
-    // Mean Voting - Voter Attack
-    if (meanVoterAttack !== meanNoAttack) {
-      attackAnalysis += `Mean voting with voter collusion changed the winner from ${meanNoAttack} to ${meanVoterAttack}. `;
-    } else {
-      attackAnalysis += `Mean voting with voter collusion did not change the outcome. `;
-    }
-
-    // Mean Voting - Project Attack
-    if (meanProjectAttack !== meanNoAttack) {
-      attackAnalysis += `Mean voting with project collusion changed the winner from ${meanNoAttack} to ${meanProjectAttack}. `;
-    } else {
-      attackAnalysis += `Mean voting with project collusion did not change the outcome. `;
-    }
-
-    text = `${normalResults}\n${attackAnalysis}`;
-
-    return text;
+        <style jsx>{`
+          .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+          }
+          
+          .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+          
+          .results-table th,
+          .results-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+          }
+          
+          .results-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+          }
+          
+          .value-cell {
+            font-family: monospace;
+            font-weight: 500;
+          }
+          
+          .results-table tr:hover {
+            background-color: #f8f8f8;
+          }
+        `}</style>
+      </div>
+    );
   };
 
   return (
     <section id="results" className="results-section">
       <h2 className="section-heading">Results</h2>
+      <h3 className="subsection-heading">Voting Mechanisms</h3>
       <p className="section-paragraph">
-        This section presents the results of the Optimism Voting Strategy analysis. The following charts and graphs provide a detailed breakdown of key metrics and insights derived from the data.
+        This section visualizes the outcomes of different voting mechanisms and their resilience to various manipulation strategies. Each chart compares project vote distributions across multiple voting systems including quadratic voting, mean voting, and maximum voting.
       </p>
 
       <div className="results-grid">
@@ -282,10 +339,10 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
           const hasData = Object.keys(data).length > 0;
 
           const barChartData = hasData ? generateChartData(data) : placeholderData;
-          const barChartOptions = generateChartOptions(`${mechanism}`);
+          const barChartOptions = generateChartOptions(mechanism);
 
           const pieChartData = hasData ? generateChartData(data) : placeholderData;
-          const pieChartOptions = generatePieChartOptions(`${mechanism}`);
+          const pieChartOptions = generatePieChartOptions(mechanism);
 
           return (
             <div className="result-box">
@@ -294,6 +351,19 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
                   <Bar data={barChartData} options={barChartOptions} />
                 ) : (
                   <Pie data={pieChartData} options={pieChartOptions} />
+                )}
+              </div>
+              <div className="mechanism-description">
+                <p>{mechanismDescriptions[mechanism]}</p>
+                {votingResults && votingResults[mechanism] && (
+                  <p className="results-summary">
+                    {Object.entries(votingResults[mechanism])
+                      .sort(([, a], [, b]) => b - a)
+                      .slice(0, 1)
+                      .map(([project, votes]) => 
+                        `Winner: Project ${project} with ${votes.toFixed(2)} votes`
+                      )}
+                  </p>
                 )}
               </div>
               <button 
@@ -317,9 +387,66 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
         </div>
       </div>
 
-      <p className="dynamic-paragraph">
-        {generateDynamicText()}
+      <h3 className="subsection-heading">Summary of Results</h3>
+      <p className="section-paragraph">
+        The table below summarizes the winning projects across different voting mechanisms. This comparison helps identify how various voting strategies and attack vectors can influence the final outcomes.
       </p>
+      {generateDynamicText()}
+
+      <style jsx>{`
+        .subsection-heading {
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          font-size: 1.5rem;
+          font-weight: 600;
+        }
+        
+        .table-container {
+          overflow-x: auto;
+          margin: 20px 0;
+        }
+        
+        .results-table {
+          width: 100%;
+          border-collapse: collapse;
+          background-color: white;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-table th,
+        .results-table td {
+          padding: 12px 16px;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
+        
+        .results-table th {
+          background-color: #f5f5f5;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+        
+        .results-table td {
+          padding: 12px 16px;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+          line-height: 1.4;
+        }
+        
+        /* Add zebra striping for better readability */
+        .results-table tbody tr:nth-child(even) {
+          background-color: #fafafa;
+        }
+        
+        .value-cell {
+          font-family: monospace;
+          font-weight: 500;
+        }
+        
+        .results-table tr:hover {
+          background-color: #f8f8f8;
+        }
+      `}</style>
     </section>
   );
 };

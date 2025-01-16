@@ -209,17 +209,17 @@ input[type="text"]:hover {
   position: relative;
   margin: 40px auto 60px;
   max-width: 800px; /* Increased max-width to accommodate arrows */
-  padding: 0 50px; /* Add padding for the arrows */
+  padding: 0 30px; /* Add padding for the arrows */
 }
 
 .slide-controls {
   position: absolute;
-  width: calc(100% + 80px); /* Extend beyond the chart area */
-  left: -40px; /* Pull back to align with outer edges */
+  width: calc(100% + 100px); /* Extend beyond the chart area */
+  left: -50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   z-index: 2;
 }
@@ -245,12 +245,13 @@ input[type="text"]:hover {
 
 .slide-indicator {
   position: absolute;
-  bottom: -30px;
+  bottom: -60px;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
   gap: 10px;
+  padding: 10px 0;
 }
 
 .indicator-dot {
@@ -260,6 +261,7 @@ input[type="text"]:hover {
   background-color: rgba(230, 57, 70, 0.3);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  margin-bottom: 40px;
 }
 
 .indicator-dot.active {
@@ -273,19 +275,21 @@ input[type="text"]:hover {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  height: 450px;
+  margin-bottom: 20px;
   width: 100%;
-  padding: 10px;
+  padding: 20px;
+  margin-bottom: 40px;
 }
 
 .chart-container {
   width: 100%;
-  height: calc(100% - 50px); /* Leave space for button */
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .chart-image {
@@ -297,11 +301,12 @@ input[type="text"]:hover {
 /* Dynamic Paragraph Styles */
 p.dynamic-paragraph {
   font-size: 16px; /* Standard paragraph size */
-  line-height: 1.6; /* Improve readability with line height */
+  line-height: 1.8;
   color: #333333; /* Darker shade for text */
-  margin-top: 20px; /* Space above the paragraph */
-  text-align: justify; /* Justify text for a cleaner look */
-  font-weight: 400; /* Regular weight */
+  margin-top: 40px;
+  padding: 20px;
+  
+  border-radius: 8px;
 }
 
 /* Style the file input to match the input-field class */
@@ -353,7 +358,7 @@ input[type="file"].input-field:focus {
 }
 
 .chart-toggle-button {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #e63946;
   color: white;
@@ -375,4 +380,23 @@ input[type="file"].input-field:focus {
 .chart-toggle-button:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mechanism-description {
+  width: 100%;
+  margin-top: 20px;
+  padding: 1.5rem;
+  /* background-color: #f8f8f8; */
+  border-radius: 8px;
+  text-align: center;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); */
+}
+
+.results-summary {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+  font-weight: 500;
+  color: #666;
+  line-height: 1.6;
 }

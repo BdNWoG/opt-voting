@@ -20,22 +20,40 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
   useEffect(() => {
     if (!votingResults) return;
 
-    // 1. Calculate the number of different project winners
-    const winnerSet = new Set<string>();
-    const mechanisms = ['maxVotingResults', 'quadraticNoAttackResults', 'meanNoAttackResults', 'quadraticVoterCollusionResults', 'quadraticProjectCollusionResults', 'meanVoterEpsilonResults', 'meanProjectEpsilonResults', 'trueVotingResults'];
+    // 1. Calculate Shannon Entropy of winners
+    const mechanisms = ['maxVotingResults', 'quadraticNoAttackResults', 'meanNoAttackResults', 
+      'quadraticVoterCollusionResults', 'quadraticProjectCollusionResults', 
+      'meanVoterEpsilonResults', 'meanProjectEpsilonResults', 'trueVotingResults'];
 
+    const winners: string[] = [];
     mechanisms.forEach((mechanism) => {
       const data = votingResults[mechanism];
       if (data) {
         const maxVotes = Math.max(...Object.values(data));
         const winner = Object.keys(data).find((project) => data[project] === maxVotes);
         if (winner) {
-          winnerSet.add(winner); // Add winner to the set
+          winners.push(winner);
         }
       }
     });
 
-    setProjectWinnersCount(winnerSet.size);
+    // Calculate probabilities for each winner
+    const winnerCounts: { [key: string]: number } = {};
+    winners.forEach(winner => {
+      winnerCounts[winner] = (winnerCounts[winner] || 0) + 1;
+    });
+
+    // Calculate Shannon Entropy
+    const totalWinners = winners.length;
+    let entropy = 0;
+    Object.values(winnerCounts).forEach(count => {
+      const probability = count / totalWinners;
+      entropy -= probability * Math.log2(probability);
+    });
+
+    // Normalize by dividing by log2(8) (maximum possible entropy with 8 mechanisms)
+    const normalizedEntropy = entropy / Math.log2(8);
+    setProjectWinnersCount(normalizedEntropy);
 
     // 2. Calculate percentage difference between Quadratic Voting and Voter Attack
     setQuadraticVoterAttackDifference(calculatePercentageDifference(votingResults['quadraticNoAttackResults'], votingResults['quadraticVoterCollusionResults']));
@@ -86,36 +104,36 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
 
   const measurementValues = [
     { 
-      label: 'Number of Different Project Winners', 
+      label: 'Voting System Divergence', 
       value: projectWinnersCount, 
-      max: 8,
-      explanation: 'This represents the number of distinct project winners across the 8 voting mechanisms. It shows how varied the winning projects are across different voting systems.'
+      max: 1,
+      explanation: 'Normalized Shannon entropy of winning project distributions. A value of 1 indicates maximum disagreement between voting systems, while 0 indicates perfect consensus.'
     },
     // Quadratic Voting Section
     { 
-      label: 'Difference between Quadratic Voting and Voter Attack', 
+      label: 'Quadratic Voting: Voter Collusion Impact', 
       value: quadraticVoterAttackDifference, 
       max: 100,
-      explanation: 'This percentage measures how much voter collusion (or attack) in quadratic voting changed the vote totals for projects compared to normal quadratic voting.'
+      explanation: 'Measures how much voter coordination changed the results in quadratic voting. Higher percentages indicate greater vulnerability to voter collusion.'
     },
     { 
-      label: 'Difference between Quadratic Voting and Project Attack', 
+      label: 'Quadratic Voting: Project Manipulation Impact', 
       value: quadraticProjectAttackDifference, 
       max: 100,
-      explanation: 'This percentage reflects the impact of project collusion in quadratic voting. It compares the changes in vote totals caused by project-level manipulation.'
+      explanation: 'Shows how much project-level manipulation affected quadratic voting results. Higher percentages suggest greater susceptibility to project-based attacks.'
     },
     // Mean Voting Section
     { 
-      label: 'Difference between Mean Voting and Voter Attack', 
+      label: 'Mean Voting: Voter Collusion Impact', 
       value: meanVoterAttackDifference, 
       max: 100,
-      explanation: 'This shows how voter collusion (or attack) affected the vote totals under the mean voting mechanism. A higher percentage indicates more influence from voter collusion.'
+      explanation: 'Indicates how much voter coordination influenced mean voting results. Higher percentages show greater sensitivity to voter collusion.'
     },
     { 
-      label: 'Difference between Mean Voting and Project Attack', 
+      label: 'Mean Voting: Project Manipulation Impact', 
       value: meanProjectAttackDifference, 
       max: 100,
-      explanation: 'This percentage measures the impact of project-level manipulation in mean voting. It shows the extent to which project collusion altered the vote results.'
+      explanation: 'Demonstrates how project-level manipulation affected mean voting results. Higher percentages indicate greater vulnerability to project-based attacks.'
     },
   ];
 
@@ -139,7 +157,11 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
             {measurementValues.map((measurement, index) => (
               <tr key={index}>
                 <td>{measurement.label}</td>
-                <td className="value-cell">{measurement.value.toFixed(2)}</td>
+                <td className="value-cell">
+                  {measurement.max === 100 
+                    ? `${measurement.value.toFixed(2)}%`
+                    : measurement.value.toFixed(2)}
+                </td>
                 <td>{measurement.explanation}</td>
               </tr>
             ))}
