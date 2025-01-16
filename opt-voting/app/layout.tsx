@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Stanford Optimism Voting",
   description: "Optimism Voting Strategy Research by Stanford Blockchain",
   icons: {
-    icon: 'SBC.jpg'
+    icon: 'SBC.png'
   }
 };
 

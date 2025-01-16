@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
           <h4>Contact Us</h4>
           <div className={styles.footerIcons}>
             <a href="https://blockchain.stanford.edu/" target="_blank" rel="noopener noreferrer">
-              <img src="/SBC.jpg" alt="Website" />
+              <img src="/SBC.png" alt="Website" />
             </a>
             <a href="https://github.com/Stanford-Blockchain-Club" target="_blank" rel="noopener noreferrer">
               <img src="/GitHub.png" alt="GitHub" />

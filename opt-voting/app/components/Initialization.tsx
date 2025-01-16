@@ -66,8 +66,8 @@ const convertToCSV = (data: any[], headers: string[]) => {
 const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ setVotingResults }) => {
   const [voterFile, setVoterFile] = useState<File | null>(null);
   const [votingPowerFile, setVotingPowerFile] = useState<File | null>(null);
-  const [voterSource, setVoterSource] = useState('upload'); // For voters
-  const [votingPowerSource, setVotingPowerSource] = useState('upload'); // For voting power
+  const [voterSource, setVoterSource] = useState('generate'); // Changed from 'upload' to 'generate'
+  const [votingPowerSource, setVotingPowerSource] = useState('generate'); // Changed from 'upload' to 'generate'
   const [voterDistribution, setVoterDistribution] = useState<'uniform' | 'gaussian'>('uniform');
   const [powerDistribution, setPowerDistribution] = useState<'uniform' | 'gaussian'>('uniform');
   const [numProjects, setNumProjects] = useState(5); // Default number of projects
@@ -168,7 +168,6 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
           setVotingResults(parsedResults);
         },
       });
-      
       // Add a checkbox for CSV download option
       const handleDownloadToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDownloadCsv(e.target.checked);

@@ -6,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   background-color: #e63946; /* Darker background to complement the red and white */
   color: #ffffff;
   z-index: 1000;
@@ -22,6 +22,7 @@
   font-size: 24px; /* Increase font size */
   font-weight: bold; /* Make the title bold */
   color: #ffffff; /* Change color back to white */
+  line-height: 1;  /* Reduces space between lines */
 }
 
 .headerRight {
@@ -54,10 +55,16 @@
 }
 
 .headerIcons a {
-  margin-left: 15px; /* Reduce space between icons */
+  display: inline-block;
+  margin: 0 8px;  /* Adds some spacing between icons */
 }
 
 .headerIcons img {
-  width: 24px; /* Slightly larger icons */
-  height: 24px;
+  width: 32px;  /* Adjust size as needed */
+  height: 32px;
+  border-radius: 50%;  /* Makes the container circular */
+  border: 1px solid white;  /* Adds white border */
+  background-color: white;  /* Adds white background */
+  padding: 5px;  /* Adds some padding around the logo */
+  object-fit: contain;  /* Ensures the logo fits nicely */
 }

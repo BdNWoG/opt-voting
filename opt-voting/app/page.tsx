@@ -5,6 +5,7 @@ import Initialization from './components/Initialization';
 import Results from './components/Results';
 import Measurement from './components/Measurement';
 import LiteratureReview from './components/LiteratureReview';
+import About from './components/About';
 
 export default function Home() {
   // Manage the voting results state here
@@ -12,9 +13,8 @@ export default function Home() {
 
   return (
     <div>
-      <section id="description" style={{ padding: '50px 20px 0px' }}>
-        {/* Insert the Literature Review component here */}
-        <LiteratureReview />
+      <section id="description" style={{ padding: '50px 0px 0px' }}>
+        <About />
       </section>
 
       {/* Pass setVotingResults to Initialization to handle the simulation and results */}

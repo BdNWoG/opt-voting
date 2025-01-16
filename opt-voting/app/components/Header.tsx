@@ -27,20 +27,22 @@ const Header: React.FC = () => {
   return (
     <header className={`${styles.header} ${!isVisible ? styles.hidden : ''}`}>
       <div className={styles.headerLeft}>
-        <h1>Optimism Voting Strategy</h1>
+        <h1>Optimism RPGF Evaluation</h1>
       </div>
       <div className={styles.headerRight}>
         <nav>
           <ul>
-            <li><a href="#initialization">Init</a></li>
-            <li><a href="#results">Result</a></li>
+            <li><a href="#results">Paper</a></li>
+            <li><a href="#results">RFP Details</a></li>
+
+            {/* <li><a href="#results">Result</a></li>
             <li><a href="#measurement">Measure</a></li>
-            <li><a href="#explanation">Explain</a></li>
+            <li><a href="#explanation">Explain</a></li> */}
           </ul>
         </nav>
         <div className={styles.headerIcons}>
           <a href="https://blockchain.stanford.edu/" target="_blank" rel="noopener noreferrer">
-            <img src="/SBC.jpg" alt="Website" />
+            <img src="/SBC.png" alt="Website" />
           </a>
           <a href="https://github.com/Stanford-Blockchain-Club" target="_blank" rel="noopener noreferrer">
             <img src="/GitHub.png" alt="GitHub" />

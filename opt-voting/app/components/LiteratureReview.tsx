@@ -11,7 +11,7 @@ const LiteratureReview = () => {
   };
 
   return (
-    <div style={{ padding: '20px 0px' }}>
+    <div style={{ padding: '0px 0px' }}>
       <h2 className="section-heading">Description</h2>
       <p className="section-paragraph">
         We will begin our exploration of DAO voting mechanism designs with a survey of existing literature on voting theory as a way to motivate the problem space and ground our exploration within a wider research context. To this end, we will discuss several prominent ideas in a modern, quantitative approach to democratic theory as well as their application and relevance to DAO governance design.
