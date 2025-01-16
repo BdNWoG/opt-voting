@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,6 +28,18 @@ interface VotingResults {
 }
 
 const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResults }) => {
+  const [visibleCharts, setVisibleCharts] = useState<{ [key: string]: 'bar' | 'pie' }>({});
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  // Initialize the visible charts when voting mechanisms change
+  useEffect(() => {
+    const initialVisibility = votingMechanisms.reduce((acc, mechanism) => {
+      acc[mechanism] = 'bar';
+      return acc;
+    }, {} as { [key: string]: 'bar' | 'pie' });
+    setVisibleCharts(initialVisibility);
+  }, []);
+
   useEffect(() => {
     console.log('Voting results updated in Results component:', votingResults); // Check if results are passed
     if (!votingResults) {
@@ -97,9 +109,13 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
         font: {
           size: 20,
         },
+        padding: {
+          top: 10,
+          bottom: 10
+        }
       },
       legend: {
-        display: false, // Remove legend from the bar chart
+        display: false,
       },
     },
     scales: {
@@ -111,6 +127,9 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
             size: 14,
           },
         },
+        ticks: {
+          padding: 5
+        }
       },
       y: {
         title: {
@@ -121,8 +140,20 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
           },
         },
         beginAtZero: true,
+        ticks: {
+          padding: 5
+        }
       },
     },
+    layout: {
+      padding: {
+        left: 5,
+        right: 5,
+        top: 5,
+        bottom: 20
+      }
+    },
+    maintainAspectRatio: true,
   });
 
   // Pie chart options without axis and axis titles
@@ -147,27 +178,20 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     },
   });
 
-  const chartPairs = votingMechanisms.map((mechanism) => {
-    const data = votingResults?.[mechanism] || {}; // Use empty object if no data
-    const hasData = Object.keys(data).length > 0;
+  const toggleChart = (mechanism: string) => {
+    setVisibleCharts(prev => ({
+      ...prev,
+      [mechanism]: prev[mechanism] === 'bar' ? 'pie' : 'bar'
+    }));
+  };
 
-    const barChartData = hasData ? generateChartData(data) : placeholderData;
-    const barChartOptions = generateChartOptions(`${mechanism}`);
+  const handlePrevSlide = () => {
+    setCurrentSlideIndex((prev) => (prev === 0 ? votingMechanisms.length - 1 : prev - 1));
+  };
 
-    const pieChartData = hasData ? generateChartData(data) : placeholderData;
-    const pieChartOptions = generatePieChartOptions(`${mechanism}`);
-
-    return (
-      <React.Fragment key={mechanism}>
-        <div className="result-box">
-          <Bar data={barChartData} options={barChartOptions} />
-        </div>
-        <div className="result-box">
-          <Pie data={pieChartData} options={pieChartOptions} />
-        </div>
-      </React.Fragment>
-    );
-  });
+  const handleNextSlide = () => {
+    setCurrentSlideIndex((prev) => (prev === votingMechanisms.length - 1 ? 0 : prev + 1));
+  };
 
   // Generate dynamic text summarizing the voting mechanisms and the impact of attacks
   const generateDynamicText = () => {
@@ -235,14 +259,62 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
   };
 
   return (
-    <section id="results" className="results-section" style={{ padding: '20px 20px' }}>
+    <section id="results" className="results-section">
       <h2 className="section-heading">Results</h2>
       <p className="section-paragraph">
         This section presents the results of the Optimism Voting Strategy analysis. The following charts and graphs provide a detailed breakdown of key metrics and insights derived from the data.
       </p>
 
       <div className="results-grid">
-        {chartPairs}
+        <div className="slide-controls">
+          <button className="slide-button" onClick={handlePrevSlide}>
+            ←
+          </button>
+          <button className="slide-button" onClick={handleNextSlide}>
+            →
+          </button>
+        </div>
+
+        {/* Only render the current slide */}
+        {(() => {
+          const mechanism = votingMechanisms[currentSlideIndex];
+          const data = votingResults?.[mechanism] || {};
+          const hasData = Object.keys(data).length > 0;
+
+          const barChartData = hasData ? generateChartData(data) : placeholderData;
+          const barChartOptions = generateChartOptions(`${mechanism}`);
+
+          const pieChartData = hasData ? generateChartData(data) : placeholderData;
+          const pieChartOptions = generatePieChartOptions(`${mechanism}`);
+
+          return (
+            <div className="result-box">
+              <div className="chart-container">
+                {visibleCharts[mechanism] === 'bar' ? (
+                  <Bar data={barChartData} options={barChartOptions} />
+                ) : (
+                  <Pie data={pieChartData} options={pieChartOptions} />
+                )}
+              </div>
+              <button 
+                className="chart-toggle-button" 
+                onClick={() => toggleChart(mechanism)}
+              >
+                Switch to {visibleCharts[mechanism] === 'bar' ? 'Pie' : 'Bar'} Chart
+              </button>
+            </div>
+          );
+        })()}
+
+        <div className="slide-indicator">
+          {votingMechanisms.map((_, index) => (
+            <div
+              key={index}
+              className={`indicator-dot ${index === currentSlideIndex ? 'active' : ''}`}
+              onClick={() => setCurrentSlideIndex(index)}
+            />
+          ))}
+        </div>
       </div>
 
       <p className="dynamic-paragraph">
@@ -253,3 +325,4 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
 };
 
 export default Results;
+

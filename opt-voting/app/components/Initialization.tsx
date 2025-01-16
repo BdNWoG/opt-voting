@@ -1,3 +1,30 @@
+/**
+ * Initialization Component
+ * 
+ * A React component that handles the initial setup for the Optimism Voting Strategy simulation.
+ * It provides two main functionalities:
+ * 1. File Upload: Allows users to upload CSV files containing voter preferences and voting power data
+ * 2. Random Generation: Generates random data for both voter preferences and voting power using
+ *    either uniform or gaussian distributions
+ * 
+ * Props:
+ * - setVotingResults: (data: any) => void
+ *   Callback function to update the parent component with processed voting results
+ * 
+ * Features:
+ * - Supports both CSV file upload and random data generation
+ * - Configurable number of voters and projects for random generation
+ * - Choice between uniform and gaussian distributions for random data
+ * - Real-time validation of file uploads
+ * - Automatic CSV conversion of generated data
+ * - Integration with backend simulation API
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Initialization setVotingResults={(data) => handleVotingResults(data)} />
+ * ```
+ */
 'use client';
 
 import React, { useState } from 'react';
@@ -46,6 +73,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
   const [numProjects, setNumProjects] = useState(5); // Default number of projects
   const [numVoters, setNumVoters] = useState(100); // Default number of voters
   const [loading, setLoading] = useState(false);
+  const [downloadCsv, setDownloadCsv] = useState(false);
 
   // Function to handle file uploads
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
@@ -140,15 +168,22 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
           setVotingResults(parsedResults);
         },
       });
+      
+      // Add a checkbox for CSV download option
+      const handleDownloadToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDownloadCsv(e.target.checked);
+      };
 
-      // Automatically trigger the download of the CSV file
-      const url = window.URL.createObjectURL(blobResponse);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'voting_results.csv';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      if (downloadCsv) {
+        // Automatically trigger the download of the CSV file
+        const url = window.URL.createObjectURL(blobResponse);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'voting_results.csv';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
     } catch (error) {
       console.error('Error in simulation:', error);
     }
