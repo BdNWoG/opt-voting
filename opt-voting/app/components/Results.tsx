@@ -392,7 +392,7 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
         The table below summarizes the winning projects across different voting mechanisms. This comparison helps identify how various voting strategies and attack vectors can influence the final outcomes.
       </p>
       {generateDynamicText()}
-
+      
       <style jsx>{`
         .subsection-heading {
           margin-top: 2rem;
@@ -446,7 +446,55 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
         .results-table tr:hover {
           background-color: #f8f8f8;
         }
+        
+        .download-button {
+          margin: 20px 0;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: background-color 0.2s;
+        }
+
+        .download-button:hover {
+          background-color: #0056b3;
+        }
       `}</style>
+                {/* Add download button */}
+                {votingResults && (
+        <div className="download-button-container">
+          <button 
+            className="show-more-button"
+            onClick={() => {
+              // Convert voting results to CSV format
+              const csvRows = ['Mechanism,Project,Votes'];
+              Object.entries(votingResults).forEach(([mechanism, data]) => {
+                Object.entries(data).forEach(([project, votes]) => {
+                  csvRows.push(`${mechanismNames[mechanism]},Project ${project},${votes}`);
+                });
+              });
+              
+              // Create and trigger download
+              const csvContent = csvRows.join('\n');
+              const blob = new Blob([csvContent], { type: 'text/csv' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'voting_results.csv';
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(url);
+            }}
+          >
+            Download Voting Results as CSV
+          </button>
+        </div>
+      )}
+      
     </section>
   );
 };
