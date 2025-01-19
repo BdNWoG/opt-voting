@@ -72,6 +72,10 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     'meanNoAttackResults',
     'meanVoterEpsilonResults',
     'meanProjectEpsilonResults',
+    // Median Voting Group
+    'medianNoAttackResults',
+    'medianVoterEpsilonResults',
+    'medianProjectEpsilonResults',
   ];
 
   // Add mapping for friendly names
@@ -83,7 +87,10 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     meanNoAttackResults: 'Mean Voting (Base Case)',
     meanVoterEpsilonResults: 'Mean Voting with Voter Manipulation',
     meanProjectEpsilonResults: 'Mean Voting with Project Manipulation',
-    trueVotingResults: 'Baseline Voting Distribution'
+    trueVotingResults: 'Baseline Voting Distribution',
+    medianNoAttackResults: 'Median Voting (Base Case)',
+    medianVoterEpsilonResults: 'Median Voting with Voter Manipulation',
+    medianProjectEpsilonResults: 'Median Voting with Project Manipulation',
   };
 
   // Add descriptions for each mechanism
@@ -95,7 +102,10 @@ const Results: React.FC<{ votingResults: VotingResults | null }> = ({ votingResu
     meanNoAttackResults: 'Mean voting system in its basic form, where votes are averaged to reduce the impact of extreme allocations.',
     meanVoterEpsilonResults: 'Illustrates the effect of strategic voting in a mean voting system when voters attempt to manipulate outcomes.',
     meanProjectEpsilonResults: 'Shows the impact of project coordination on mean voting results when projects try to game the system.',
-    trueVotingResults: 'Distribution of votes according to data from voters\' preference matrix, without any manipulation, serving as a baseline for comparison.'
+    trueVotingResults: 'Distribution of votes according to data from voters\' preference matrix, without any manipulation, serving as a baseline for comparison.',
+    medianNoAttackResults: 'Median voting mechanism in its basic form, where the median preference is used to determine the winner.',
+    medianVoterEpsilonResults: 'Shows the impact of strategic voting in a median voting system when voters attempt to manipulate outcomes.',
+    medianProjectEpsilonResults: 'Shows the impact of project coordination on median voting results when projects try to game the system.',
   };
 
   const generateChartData = (data: { [project: string]: number }) => {

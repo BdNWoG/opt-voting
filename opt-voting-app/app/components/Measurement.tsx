@@ -16,6 +16,8 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
   const [quadraticProjectAttackDifference, setQuadraticProjectAttackDifference] = useState(0);
   const [meanVoterAttackDifference, setMeanVoterAttackDifference] = useState(0);
   const [meanProjectAttackDifference, setMeanProjectAttackDifference] = useState(0);
+  const [medianVoterAttackDifference, setMedianVoterAttackDifference] = useState(0);
+  const [medianProjectAttackDifference, setMedianProjectAttackDifference] = useState(0);
 
   useEffect(() => {
     if (!votingResults) return;
@@ -23,7 +25,8 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
     // 1. Calculate Shannon Entropy of winners
     const mechanisms = ['maxVotingResults', 'quadraticNoAttackResults', 'meanNoAttackResults', 
       'quadraticVoterCollusionResults', 'quadraticProjectCollusionResults', 
-      'meanVoterEpsilonResults', 'meanProjectEpsilonResults', 'trueVotingResults'];
+      'meanVoterEpsilonResults', 'meanProjectEpsilonResults', 'trueVotingResults',
+      'medianNoAttackResults', 'medianVoterEpsilonResults', 'medianProjectEpsilonResults'];
 
     const winners: string[] = [];
     mechanisms.forEach((mechanism) => {
@@ -52,7 +55,7 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
     });
 
     // Normalize by dividing by log2(8) (maximum possible entropy with 8 mechanisms)
-    const normalizedEntropy = entropy / Math.log2(8);
+    const normalizedEntropy = entropy / Math.log2(mechanisms.length);
     setProjectWinnersCount(normalizedEntropy);
 
     // 2. Calculate percentage difference between Quadratic Voting and Voter Attack
@@ -66,6 +69,12 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
 
     // 5. Calculate percentage difference between Mean Voting and Project Attack
     setMeanProjectAttackDifference(calculatePercentageDifference(votingResults['meanNoAttackResults'], votingResults['meanProjectEpsilonResults']));
+
+    // 6. Calculate percentage difference between Median Voting and Voter Attack
+    setMedianVoterAttackDifference(calculatePercentageDifference(votingResults['medianNoAttackResults'], votingResults['medianVoterEpsilonResults']));
+
+    // 7. Calculate percentage difference between Median Voting and Project Attack
+    setMedianProjectAttackDifference(calculatePercentageDifference(votingResults['medianNoAttackResults'], votingResults['medianProjectEpsilonResults']));
 
   }, [votingResults]);
 
@@ -134,6 +143,19 @@ const Measurement: React.FC<MeasurementProps> = ({ votingResults }) => {
       value: meanProjectAttackDifference, 
       max: 100,
       explanation: 'Demonstrates how project-level manipulation affected mean voting results. Higher percentages indicate greater vulnerability to project-based attacks.'
+    },
+    // Median Voting Section
+    { 
+      label: 'Median Voting: Voter Manipulation Impact', 
+      value: medianVoterAttackDifference, 
+      max: 100,
+      explanation: 'Shows how much voter coordination influenced median voting results. Higher percentages indicate greater sensitivity to voter collusion.'
+    },
+    { 
+      label: 'Median Voting: Project Manipulation Impact', 
+      value: medianProjectAttackDifference, 
+      max: 100,
+      explanation: 'Indicates how much project-level manipulation affected median voting results. Higher percentages suggest greater susceptibility to project-based attacks.'
     },
   ];
 

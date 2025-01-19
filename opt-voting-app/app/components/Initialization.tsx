@@ -199,6 +199,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
 
       {/* Links to download voter preferences and voting power CSV templates */}
       <div className="download-links">
+        <h3>Download Sample CSV Files</h3>
         <a href="/uploads/voter_preferences.csv" download>Download Voter Preferences CSV</a> | 
         <a href="/uploads/voting_power.csv" download>Download Voting Power CSV</a>
       </div>

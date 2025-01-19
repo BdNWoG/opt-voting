@@ -11,6 +11,9 @@ import {
   meanVotingVoterEpsilonAttack,
   meanVotingProjectEpsilonAttack,
   trueVoting,
+  medianVotingNoAttack,
+  medianVotingVoterEpsilonAttack,
+  medianVotingProjectEpsilonAttack,
 } from '../../utils/votingMechanisms'; // Import voting functions
 
 // Directory for storing uploaded files
@@ -130,6 +133,15 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     // True Voting
     const trueVotingResults = trueVoting(votersData);
 
+    // Median Voting - No Attack
+    const medianNoAttackResults = medianVotingNoAttack(votersData);
+
+    // Median Voting - Voter Epsilon Attack
+    const medianVoterEpsilonResults = medianVotingVoterEpsilonAttack(votersData);
+
+    // Median Voting - Project Epsilon Attack
+    const medianProjectEpsilonResults = medianVotingProjectEpsilonAttack(votersData);
+
     const votingResults = {
       maxVotingResults,
       quadraticNoAttackResults,
@@ -139,6 +151,9 @@ const simulateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       meanVoterEpsilonResults,
       meanProjectEpsilonResults,
       trueVotingResults,
+      medianNoAttackResults,
+      medianVoterEpsilonResults,
+      medianProjectEpsilonResults,
     };
 
     console.log('Generating CSV for voting results');

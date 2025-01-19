@@ -29,7 +29,7 @@ App uses Next.js and Tailwind CSS.
 
 ```bash
 git clone https://github.com/Stanford-Blockchain-Club/optimism-rfp-simulation
-cd opt-voting
+cd opt-voting-app
 npm run dev
 ```
 
