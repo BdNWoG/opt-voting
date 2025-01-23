@@ -332,6 +332,7 @@ async function fileToString(file: File): Promise<string> {
           {loading ? 'Simulating...' : 'Simulate'}
         </button>
       </div>
+    </section>
   );
 };
 
