@@ -64,6 +64,7 @@ const convertToCSV = (data: any[], headers: string[]) => {
 };
 
 const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ setVotingResults }) => {
+  const [simulationCount, setSimulationCount] = useState(1000);
   const [voterFile, setVoterFile] = useState<File | null>(null);
   const [votingPowerFile, setVotingPowerFile] = useState<File | null>(null);
   const [voterSource, setVoterSource] = useState('generate'); // Changed from 'upload' to 'generate'
@@ -87,7 +88,7 @@ const Initialization: React.FC<{ setVotingResults: (data: any) => void }> = ({ s
   setLoading(true);
 
   // Number of simulations you want to run
-  const totalSimulations = 1000;
+  const totalSimulations = simulationCount;
 
   // This structure will accumulate votes across all simulations.
   // For convenience, use an object of objects, keyed by mechanism and project.
@@ -311,11 +312,26 @@ async function fileToString(file: File): Promise<string> {
 
       {/* Simulate Button */}
       <div className="simulate-button-container">
-        <button className="simulate-button" onClick={handleSimulate} disabled={loading}>
+        <label>
+          Number of Simulations:
+          <input
+            type="number"
+            min="1"
+            value={simulationCount}
+            onChange={(e) => setSimulationCount(Number(e.target.value))}
+            style={{ width: '80px', marginLeft: '10px' }}
+          />
+        </label>
+
+        <button
+          className="simulate-button"
+          onClick={handleSimulate}
+          disabled={loading}
+          style={{ marginLeft: '20px' }}
+        >
           {loading ? 'Simulating...' : 'Simulate'}
         </button>
       </div>
-    </section>
   );
 };
 
